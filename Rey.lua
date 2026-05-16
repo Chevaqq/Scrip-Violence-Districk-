@@ -1,23 +1,25 @@
--- [[ CHEVA HUB - EXCLUSIVE TRACER LINE ONLY ]] --
+-- [[ CHEVA HUB - VISUAL AIM & TRACER EDITION ]] --
 
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
 
--- Proteksi tumpang tindih UI
-if CoreGui:FindFirstChild("ChevaTracerHub") then
-    CoreGui.ChevaTracerHub:Destroy()
+-- Hapus UI lama biar gak tumpuk
+if CoreGui:FindFirstChild("ChevaSeparatedHub") then
+    CoreGui.ChevaSeparatedHub:Destroy()
 end
 
--- 1. UTAMA SCREEN GUI
+-- 1. SCREEN GUI UTAMA
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ChevaTracerHub"
+ScreenGui.Name = "ChevaSeparatedHub"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 ---------------------------------------------------------
--- TOMBOL TOGGLE (STATIS DI KIRI ATAS - DI BAWAH MENU ROBLOX)
+-- TOMBOL TOGGLE (STATIS DI KIRI ATAS)
 ---------------------------------------------------------
 local ToggleButton = Instance.new("TextButton")
 local ToggleCorner = Instance.new("UICorner")
@@ -26,12 +28,12 @@ local ToggleStroke = Instance.new("UIStroke")
 ToggleButton.Name = "Toggle"
 ToggleButton.Parent = ScreenGui
 ToggleButton.Size = UDim2.new(0, 55, 0, 55)
-ToggleButton.Position = UDim2.new(0, 15, 0, 55) -- Posisi statis tidak bisa digeser
+ToggleButton.Position = UDim2.new(0, 15, 0, 55)
 ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ToggleButton.BackgroundTransparency = 0.3
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.Text = "TOGGLE"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 100, 0) -- Warna Oranye sesuai tema fitur
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.TextSize = 13
 
 ToggleCorner.CornerRadius = UDim.new(1, 0)
@@ -42,7 +44,7 @@ ToggleStroke.Thickness = 1.5
 ToggleStroke.Parent = ToggleButton
 
 ---------------------------------------------------------
--- MAIN PANEL FRAME (HITAM TRANSPARAN 0.5)
+-- PANEL UTAMA (HITAM TRANSPARAN 0.5)
 ---------------------------------------------------------
 local MainFrame = Instance.new("Frame")
 local MainCorner = Instance.new("UICorner")
@@ -50,8 +52,8 @@ local MainStroke = Instance.new("UIStroke")
 
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.Size = UDim2.new(0, 350, 0, 150) -- Ukuran lebih minimalis karena cuma 1 fitur
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -75)
+MainFrame.Size = UDim2.new(0, 420, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -210, 0.5, -125)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BackgroundTransparency = 0.5
 MainFrame.Visible = true
@@ -59,68 +61,51 @@ MainFrame.Visible = true
 MainCorner.CornerRadius = UDim.new(0, 10)
 MainCorner.Parent = MainFrame
 
-MainStroke.Color = Color3.fromRGB(255, 100, 0) -- Stroke Oranye biar sangar
+MainStroke.Color = Color3.fromRGB(100, 100, 100)
 MainStroke.Thickness = 1
 MainStroke.Parent = MainFrame
 
--- Fungsi Buka/Tutup lewat Tombol Toggle
+-- Fungsi Buka Tutup
 ToggleButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)
 
 ---------------------------------------------------------
--- TITLE HEADER
+-- HEADER & TABS NAVIGATION
 ---------------------------------------------------------
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Parent = MainFrame
-TitleLabel.Size = UDim2.new(1, 0, 0, 45)
+TitleLabel.Size = UDim2.new(1, 0, 0, 35)
 TitleLabel.Position = UDim2.new(0, 0, 0, 5)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Font = Enum.Font.SourceSansBold
-TitleLabel.Text = "CHEVA HUB - TRACER EDITION"
+TitleLabel.Text = "CHEVA HUB - COMBAT VISUAL"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleLabel.TextSize = 16
+TitleLabel.TextSize = 15
+
+local TabBar = Instance.new("Frame")
+TabBar.Parent = MainFrame
+TabBar.Size = UDim2.new(1, -20, 0, 35)
+TabBar.Position = UDim2.new(0, 10, 0, 40)
+TabBar.BackgroundTransparency = 1
+
+local TabListLayout = Instance.new("UIListLayout")
+TabListLayout.Parent = TabBar
+TabListLayout.FillDirection = Enum.FillDirection.Horizontal
+TabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabListLayout.Padding = UDim.new(0, 8)
+
+local ContentArea = Instance.new("Frame")
+ContentArea.Parent = MainFrame
+ContentArea.Size = UDim2.new(1, -20, 1, -95)
+ContentArea.Position = UDim2.new(0, 10, 0, 85)
+ContentArea.BackgroundTransparency = 1
 
 ---------------------------------------------------------
--- TOMBOL SWITCH FITUR ON / OFF
+-- LOGIKA DETEKSI TARGET (MENCARI PLAYER LAIN TERDEKAT)
 ---------------------------------------------------------
-local RowFrame = Instance.new("Frame")
-RowFrame.Parent = MainFrame
-RowFrame.Size = UDim2.new(1, -20, 0, 50)
-RowFrame.Position = UDim2.new(0, 10, 0, 65)
-RowFrame.BackgroundTransparency = 1
-
-local FeatureLabel = Instance.new("TextLabel")
-FeatureLabel.Parent = RowFrame
-FeatureLabel.Size = UDim2.new(0, 200, 1, 0)
-FeatureLabel.BackgroundTransparency = 1
-FeatureLabel.Font = Enum.Font.SourceSansBold
-FeatureLabel.Text = "  TREACHER LINE (ORANGE)"
-FeatureLabel.TextColor3 = Color3.fromRGB(230, 230, 230)
-FeatureLabel.TextSize = 14
-FeatureLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-local SwitchButton = Instance.new("TextButton")
-local SwitchCorner = Instance.new("UICorner")
-SwitchButton.Parent = RowFrame
-SwitchButton.Size = UDim2.new(0, 65, 0, 30)
-SwitchButton.Position = UDim2.new(1, -75, 0.5, -15)
-SwitchButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-SwitchButton.Font = Enum.Font.SourceSansBold
-SwitchButton.Text = "OFF"
-SwitchButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SwitchButton.TextSize = 12
-SwitchCorner.CornerRadius = UDim.new(0, 15)
-SwitchCorner.Parent = SwitchButton
-
----------------------------------------------------------
--- LOGIKA ENGINE UTAMA: GERAKAN LINE ORANYE KE TARGET
----------------------------------------------------------
-_G.TracerLineOrange = false
-
--- Fungsi mencari musuh terdekat dari karakter kita
 local function GetClosestTarget()
-    local closestPlayer = nil
+    local closestPart = nil
     local shortestDistance = math.huge
     local myChar = LocalPlayer.Character
     
@@ -129,52 +114,153 @@ local function GetClosestTarget()
             if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") and p.Character.Humanoid.Health > 0 then
                 local distance = (myChar.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
                 if distance < shortestDistance then
-                    closestPlayer = p.Character.HumanoidRootPart
+                    closestPart = p.Character.HumanoidRootPart
                     shortestDistance = distance
                 end
             end
         end
     end
-    return closestPlayer
+    return closestPart
 end
 
--- Fungsi membuat efek garis laser Oranye murni menggunakan BoxHandleAdornment (Anti-Lag & Instant)
-local function CreateOrangeLaser(startPos, endPos)
-    local laser = Instance.new("BoxHandleAdornment")
-    laser.Size = Vector3.new(0.15, 0.15, (startPos - endPos).Magnitude)
-    laser.CFrame = CFrame.new(startPos:Lerp(endPos, 0.5), endPos)
-    laser.Color3 = Color3.fromRGB(255, 100, 0) -- Warna Oranye menyala tulen
-    laser.Transparency = 0.1
-    laser.AlwaysOnTop = true
-    laser.ZIndex = 5
-    laser.Adornee = workspace.Terrain
-    laser.Parent = workspace.Terrain
+---------------------------------------------------------
+-- ENGINE UI BUILDER (TAB & SAKLAR TOGGLE)
+---------------------------------------------------------
+local activePage = nil
+
+local function CreateNewTab(name, order)
+    local Button = Instance.new("TextButton")
+    local BtnCorner = Instance.new("UICorner")
     
-    -- Efek instant hilang setelah peluru sampai/kena target
-    task.wait(0.12)
-    laser:Destroy()
+    Button.Parent = TabBar
+    Button.Size = UDim2.new(0, 120, 1, 0)
+    Button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Button.Font = Enum.Font.SourceSansBold
+    Button.Text = name:upper()
+    Button.TextColor3 = Color3.fromRGB(150, 150, 150)
+    Button.TextSize = 13
+    Button.LayoutOrder = order
+    BtnCorner.CornerRadius = UDim.new(0, 5)
+    BtnCorner.Parent = Button
+
+    local Page = Instance.new("Frame")
+    Page.Parent = ContentArea
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.Visible = false
+
+    local PageLayout = Instance.new("UIListLayout")
+    PageLayout.Parent = Page
+    PageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    PageLayout.Padding = UDim.new(0, 6)
+
+    Button.MouseButton1Click:Connect(function()
+        if activePage then activePage.Visible = false end
+        Page.Visible = true
+        activePage = Page
+        for _, obj in pairs(TabBar:GetChildren()) do
+            if obj:IsA("TextButton") then obj.TextColor3 = Color3.fromRGB(150, 150, 150) end
+        end
+        Button.TextColor3 = Color3.fromRGB(0, 220, 110)
+    end)
+
+    if order == 1 then
+        Page.Visible = true
+        activePage = Page
+        Button.TextColor3 = Color3.fromRGB(0, 220, 110)
+    end
+
+    return Page
 end
 
--- Deteksi klik/tembakan untuk memunculkan garis laser ke target
-SwitchButton.MouseButton1Click:Connect(function()
-    _G.TracerLineOrange = not _G.TracerLineOrange
-    if _G.TracerLineOrange then
-        SwitchButton.BackgroundColor3 = Color3.fromRGB(255, 100, 0) -- Berubah jadi oranye saat aktif
-        SwitchButton.Text = "ON"
-    else
-        SwitchButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-        SwitchButton.Text = "OFF"
-    end
-end)
+local function AddFeatureToggle(page, text, flag)
+    local Row = Instance.new("Frame")
+    Row.Parent = page
+    Row.Size = UDim2.new(1, 0, 0, 40)
+    Row.BackgroundTransparency = 1
 
--- Listener Tembakan / Serangan Peluru keluar
-local Mouse = LocalPlayer:GetMouse()
-Mouse.Button1Down:Connect(function()
-    if _G.TracerLineOrange and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+    local Label = Instance.new("TextLabel")
+    Label.Parent = Row
+    Label.Size = UDim2.new(0, 200, 1, 0)
+    Label.BackgroundTransparency = 1
+    Label.Font = Enum.Font.SourceSansBold
+    Label.Text = "  " .. text:upper()
+    Label.TextColor3 = Color3.fromRGB(220, 220, 220)
+    Label.TextSize = 14
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local Switch = Instance.new("TextButton")
+    local SwitchCorner = Instance.new("UICorner")
+    Switch.Parent = Row
+    Switch.Size = UDim2.new(0, 60, 0, 26)
+    Switch.Position = UDim2.new(1, -70, 0.5, -13)
+    Switch.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+    Switch.Font = Enum.Font.SourceSansBold
+    Switch.Text = "OFF"
+    Switch.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Switch.TextSize = 12
+    SwitchCorner.CornerRadius = UDim.new(0, 13)
+    SwitchCorner.Parent = Switch
+
+    _G[flag] = false
+    Switch.MouseButton1Click:Connect(function()
+        _G[flag] = not _G[flag]
+        if _G[flag] then
+            Switch.BackgroundColor3 = Color3.fromRGB(0, 180, 80)
+            Switch.Text = "ON"
+        else
+            Switch.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            Switch.Text = "OFF"
+        end
+    end)
+end
+
+---------------------------------------------------------
+-- PEMBAGIAN TAB TERPISAH
+---------------------------------------------------------
+local AimlockPage = CreateNewTab("Aimlock System", 1)
+local TracerPage  = CreateNewTab("Tracer Line", 2)
+
+-- Mengisi fitur di tab masing-masing
+AddFeatureToggle(AimlockPage, "Enable Aimlock (Camera)", "CameraAimlock")
+AddFeatureToggle(TracerPage, "Enable Tracer Line (Red)", "RedVisualTracer")
+
+---------------------------------------------------------
+-- CORE LOGIKA OPERASIONAL GAME
+---------------------------------------------------------
+
+-- 1. Operasi Pergerakan Kamera Mulus (Aimlock)
+RunService.RenderStepped:Connect(function()
+    if _G.CameraAimlock then
         local target = GetClosestTarget()
         if target then
-            -- Garis ditarik dari tubuh karakter kamu langsung meluncur lurus ke koordinat target terdekat
-            CreateOrangeLaser(LocalPlayer.Character.HumanoidRootPart.Position, target.Position)
+            -- Memaksa CFrame kamera lokal untuk terus menghadap posisi dada target terdekat secara mulus
+            Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
         end
     end
 end)
+
+-- 2. Operasi Pembuatan Garis Laser Instan (Tracer Line) ketika layar ditekan
+local Mouse = LocalPlayer:GetMouse()
+local function SpawnLaserEffect(startPos, endPos)
+    local laser = Instance.new("BoxHandleAdornment")
+    laser.Size = Vector3.new(0.15, 0.15, (startPos - endPos).Magnitude)
+    laser.CFrame = CFrame.new(startPos:Lerp(endPos, 0.5), endPos)
+    laser.Color3 = Color3.fromRGB(255, 30, 30) -- Garis Merah menyala
+    laser.Transparency = 0.2
+    laser.AlwaysOnTop = true
+    laser.ZIndex = 6
+    laser.Adornee = workspace.Terrain
+    laser.Parent = workspace.Terrain
+    
+    -- Efek lurus langsung lenyap/hilang sekejap (0.1 detik) setelah dilepas
+    task.wait(0.1)
+    laser:Destroy()
+end
+
+Mouse.Button1Down:Connect(function()
+    if _G.RedVisualTracer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local target = GetClosestTarget()
+        if target then
+            -- Menarik garis visual simulasi dari posisi root karakter menuju root musuh terdekat
+            task.spawn(SpawnLaserEffect, LocalPlayer.Character.HumanoidRootPart.Position, target.Position)

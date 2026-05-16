@@ -1,188 +1,293 @@
--- [[ TARUH SCRIPT INI DI LOCALSCRIPT TOOL SENJATA LU ]] --
+-- [[ VIOLENCE DISTRICT SCRIPT HUB - DELTA EXECUTOR ]] --
+
+-- Menghapus UI lama kalau ada biar gak tumpuk
+if game.CoreGui:FindFirstChild("ViolenceDistrictUI") then
+    game.CoreGui.ViolenceDistrictUI:Destroy()
+end
 
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
-local Tool = script.Parent
-
--- [[ 1. SETTINGS CONFIG ]] --
-local Settings = {
-    KillerEnabled = false,
-    SurvivorEnabled = false,
-    GeneratorEnabled = false,
-    TracerEnabled = false,
-    
-    -- Colors
-    KillerColor = Color3.fromRGB(255, 0, 0),     -- Merah
-    SurvivorColor = Color3.fromRGB(0, 0, 255),   -- Biru
-    GeneratorColor = Color3.fromRGB(255, 255, 0),-- Kuning
-    TracerColor = Color3.fromRGB(255, 100, 0)    -- Orange
-}
-
--- [[ 2. UI CREATION (BUTTON & PANEL) ]] --
+-- 1. MAIN SCREEN GUI
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ReyHubMekanikUI"
-ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Name = "ViolenceDistrictUI"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
 
--- Tombol Open/Close
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
-ToggleBtn.Position = UDim2.new(0, 10, 0.5, -25)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ToggleBtn.TextColor3 = Color3.new(1, 1, 1)
-ToggleBtn.Text = "Rey"
-ToggleBtn.TextSize = 16
-Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
-ToggleBtn.Parent = ScreenGui
-
--- Main Panel
+-- 2. MAIN FRAME (Background Hitam Transparan 0.5)
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 240, 0, 240)
-MainFrame.Position = UDim2.new(0.5, -120, 0.5, -120)
-MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-MainFrame.BackgroundTransparency = 0.5
-MainFrame.Visible = false
-Instance.new("UICorner", MainFrame)
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 450, 0, 280)
+MainFrame.Position = UDim2.new(0.5, -225, 0.5, -140)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BackgroundTransparency = 0.5 --
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true -- Biar bisa digeser lancar di HP
 MainFrame.Parent = ScreenGui
 
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+
+-- 3. TITLE BAR
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Text = "ReyHub - Test Visual"
-Title.TextColor3 = Color3.new(1, 1, 1)
+Title.Name = "Title"
+Title.Size = UDim2.new(1, -40, 0, 40)
+Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
+Title.Text = "VIOLENCE DISTRICT HUB"
+Title.TextColor3 = Color3.fromRGB(255, 55, 55)
 Title.TextSize = 18
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = MainFrame
 
+-- 4. CLOSE BUTTON (X) - Menghapus Script Sepenuhnya
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Name = "CloseBtn"
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 5)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+CloseBtn.TextSize = 18
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Parent = MainFrame
+
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+-- 5. BUTTON OPEN/CLOSE MENU (Tombol Kecil untuk Sembunyi/Munculkan UI)
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Size = UDim2.new(0, 60, 0, 30)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10) -- Posisi pojok kiri atas layar
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
+ToggleBtn.Text = "OPEN"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.TextSize = 12
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true -- Tombol ini bisa kamu geser sesuka hati di HP biar gak ngalangin
+ToggleBtn.Parent = ScreenGui
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0, 6)
+ToggleCorner.Parent = ToggleBtn
+
+-- Logika Open/Close Instant (Tanpa Animasi)
 ToggleBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
-end)
-
--- [[ 3. TOGGLE BUTTON CREATOR ]] --
-local function CreateToggle(name, order, startState, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 35)
-    btn.Position = UDim2.new(0.05, 0, 0.18, (order * 40))
-    btn.BackgroundColor3 = startState and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(50, 50, 50)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Text = name .. ": " .. (startState and "ON" or "OFF")
-    Instance.new("UICorner", btn)
-    btn.Parent = MainFrame
-    
-    btn.MouseButton1Click:Connect(function()
-        local state = callback()
-        btn.Text = name .. ": " .. (state and "ON" or "OFF")
-        btn.BackgroundColor3 = state and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(50, 50, 50)
-    end)
-end
-
-CreateToggle("Chams Killer (Merah)", 0, Settings.KillerEnabled, function()
-    Settings.KillerEnabled = not Settings.KillerEnabled
-    return Settings.KillerEnabled
-end)
-
-CreateToggle("Chams Survivor (Biru)", 1, Settings.SurvivorEnabled, function()
-    Settings.SurvivorEnabled = not Settings.SurvivorEnabled
-    return Settings.SurvivorEnabled
-end)
-
-CreateToggle("Chams Generator (Kuning)", 2, Settings.GeneratorEnabled, function()
-    Settings.GeneratorEnabled = not Settings.GeneratorEnabled
-    return Settings.GeneratorEnabled
-end)
-
-CreateToggle("Tracer Line (Orange)", 3, Settings.TracerEnabled, function()
-    Settings.TracerEnabled = not Settings.TracerEnabled
-    return Settings.TracerEnabled
-end)
-
--- [[ 4. VISUAL EFFECTS ENGINE ]] --
-local function ApplyChams(instance, color, isEnabled, namePenanda)
-    if not instance then return end
-    local highlight = instance:FindFirstChild(namePenanda)
-    
-    if not isEnabled then
-        if highlight then highlight:Destroy() end
-        return
-    end
-    
-    if not highlight then
-        highlight = Instance.new("Highlight")
-        highlight.Name = namePenanda
-        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-        highlight.Parent = instance
-    end
-    
-    highlight.FillColor = color
-    highlight.OutlineColor = Color3.new(1, 1, 1)
-    highlight.FillTransparency = 0.4
-end
-
--- TRACER LINE FUNCTION (Garis muncul lurus mengarah ke target dan langsung musnah)
-local function BuatTracerLine(dari, ke)
-    if not Settings.TracerEnabled then return end
-    
-    local part = Instance.new("Part")
-    part.Anchored = true
-    part.CanCollide = false
-    part.Material = Enum.Material.Neon
-    part.Color = Settings.TracerColor
-    part.Transparency = 0.1
-    
-    local jarak = (ke - dari).Magnitude
-    part.Size = Vector3.new(0.1, 0.1, jarak)
-    part.CFrame = CFrame.lookAt(dari, ke) * CFrame.new(0, 0, -jarak / 2)
-    part.Parent = workspace
-    
-    -- Langsung hancur dalam sekejap (simulasi setelah peluru sampai mengenai target)
-    task.delay(0.06, function()
-        part:Destroy()
-    end)
-end
-
--- [[ 5. MAIN LOOP PROCESS ]] --
-RunService.RenderStepped:Connect(function()
-    -- Loop Player Chams (Killer & Survivor)
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character then
-            local isKiller = (player.Team and player.Team.Name:lower():find("killer")) or player:GetAttribute("Role") == "Killer"
-            
-            if isKiller then
-                ApplyChams(player.Character, Settings.KillerColor, Settings.KillerEnabled, "ReyKillerChams")
-            else
-                ApplyChams(player.Character, Settings.SurvivorColor, Settings.SurvivorEnabled, "ReySurvChams")
-            end
-        end
-    end
-    
-    -- Loop Generator Chams (Kuning)
-    if Settings.GeneratorEnabled then
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj:IsA("Model") and (obj.Name:lower():find("gen") or obj.Name:lower():find("generator")) then
-                ApplyChams(obj, Settings.GeneratorColor, Settings.GeneratorEnabled, "ReyGenChams")
-            end
-        end
+    if MainFrame.Visible then
+        MainFrame.Visible = false
+        ToggleBtn.Text = "OPEN"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
     else
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj:IsA("Model") and obj:FindFirstChild("ReyGenChams") then
-                obj.ReyGenChams:Destroy()
+        MainFrame.Visible = true
+        ToggleBtn.Text = "CLOSE"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    end
+end)
+
+-- 6. NAVIGATION TABS (Samping)
+local TabContainer = Instance.new("Frame")
+TabContainer.Name = "TabContainer"
+TabContainer.Size = UDim2.new(0, 120, 1, -50)
+TabContainer.Position = UDim2.new(0, 10, 0, 45)
+TabContainer.BackgroundTransparency = 1
+TabContainer.Parent = MainFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.Parent = TabContainer
+
+-- 7. CONTAINER UNTUK ISI FITUR
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Name = "ContentContainer"
+ContentContainer.Size = UDim2.new(1, -150, 1, -50)
+ContentContainer.Position = UDim2.new(0, 140, 0, 45)
+ContentContainer.BackgroundTransparency = 1
+ContentContainer.Parent = MainFrame
+
+local tabs = {}
+local function CreateTab(tabName)
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Name = tabName .. "Tab"
+    TabBtn.Size = UDim2.new(1, 0, 0, 35)
+    TabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TabBtn.BorderSizePixel = 0
+    TabBtn.Text = tabName
+    TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TabBtn.TextSize = 14
+    TabBtn.Font = Enum.Font.HelveticaBold
+    TabBtn.Parent = TabContainer
+    
+    local BtnCorner = Instance.new("UICorner")
+    BtnCorner.CornerRadius = UDim.new(0, 4)
+    BtnCorner.Parent = TabBtn
+
+    local Page = Instance.new("ScrollingFrame")
+    Page.Name = tabName .. "Page"
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.Visible = false
+    Page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    Page.ScrollBarThickness = 4
+    Page.Parent = ContentContainer
+    
+    local PageList = Instance.new("UIListLayout")
+    PageList.Padding = UDim.new(0, 6)
+    PageList.Parent = Page
+
+    -- Pindah tab secara INSTAN
+    TabBtn.MouseButton1Click:Connect(function()
+        for _, t in pairs(tabs) do
+            t.Page.Visible = false
+            t.Btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        end
+        Page.Visible = true
+        TabBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
+    end)
+
+    tabs[tabName] = {Btn = TabBtn, Page = Page}
+    return Page
+end
+
+-- BIKIN TAB
+local MainTab = CreateTab("Main")
+local VisualTab = CreateTab("Visual")
+
+tabs["Main"].Page.Visible = true
+tabs["Main"].Btn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
+
+local function AddButton(parentPage, text, callback)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, -10, 0, 40)
+    Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Btn.BorderSizePixel = 0
+    Btn.Text = text
+    Btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+    Btn.TextSize = 14
+    Btn.Font = Enum.Font.SourceSansPro
+    Btn.Parent = parentPage
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 4)
+    Corner.Parent = Btn
+    
+    Btn.MouseButton1Click:Connect(callback)
+    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 10)
+end
+
+-- ==================================================
+-- LOGIKA TRACER LINE LOGIC (ORANGE LINE LOCK KILLER)
+-- ==================================================
+local TracerEnabled = false
+local ActiveTracer = nil
+
+-- Fungsi nyari player yang rolenya/namanya "Killer" di game
+local function GetKillerTarget()
+    -- Ganti logika ini sesuai dengan sistem game Violence District (apakah pakai Team atau Value di dalam player)
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            -- Contoh deteksi jika nama team-nya "Killer" atau punya atribut Killer
+            if player.Team leadership and player.Team.Name == "Killer" or player:FindFirstChild("IsKiller") or string.find(player.Name:lower(), "killer") then
+                return player.Character.HumanoidRootPart
+            end
+        end
+    end
+    
+    -- Fallback: Kalau sistem team di atas beda, script bakal cari player terdekat yang bukan kamu sebagai target sementara
+    local closestPlayer = nil
+    local shortestDistance = math.huge
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local distance = (LocalPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                closestPlayer = player.Character.HumanoidRootPart
+            end
+        end
+    end
+    return closestPlayer
+end
+
+-- Fungsi buat bikin part line lurus warna Orange
+local function CreateOrangeLine(targetPart)
+    if ActiveTracer then ActiveTracer:Destroy() end
+
+    local LinePart = Instance.new("Part")
+    LinePart.Name = "TracerLine"
+    LinePart.Anchored = true
+    LinePart.CanCollide = false
+    LinePart.Color = Color3.fromRGB(255, 120, 0) -- Warna Orange lurus
+    LinePart.Material = Enum.Material.Neon
+    LinePart.Parent = workspace
+
+    ActiveTracer = LinePart
+
+    -- Update posisi Line secara real-time mengikuti pergerakan tangan player ke target Killer
+    local connection
+    connection = RunService.RenderStepped:Connect(function()
+        if not TracerEnabled or not LinePart or not targetPart or not targetPart.Parent or not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            if LinePart then LinePart:Destroy() end
+            connection:Disconnect()
+            return
+        end
+
+        local startPos = LocalPlayer.Character.HumanoidRootPart.Position - Vector3.new(0, 1, 0) -- Berawal dari sekitar senjata/tangan
+        local endPos = targetPart.Position
+
+        local distance = (endPos - startPos).Magnitude
+        LinePart.Size = Vector3.new(0.1, 0.1, distance)
+        LinePart.CFrame = CFrame.new(startPos, endPos) * CFrame.new(0, 0, -distance / 2)
+    end)
+end
+
+-- Trigger pas player Klik Tembak (Mouse klik kiri di HP/Delta)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if not TracerEnabled then return end
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local target = GetKillerTarget()
+        if target then
+            CreateOrangeLine(target)
+
+            -- Simulasi peluru mengenai target (menghilang setelah beberapa saat / peluru sampai)
+            task.wait(0.15) -- Estimasi waktu peluru mengenai target, lalu otomatis hilang
+            if ActiveTracer then
+                ActiveTracer:Destroy()
+                ActiveTracer = nil
             end
         end
     end
 end)
 
--- [[ 6. WEAPON SHOOT EVENT ]] --
-Tool.Activated:Connect(function()
-    local karakter = LocalPlayer.Character
-    if not karakter or not karakter:FindFirstChild("HumanoidRootPart") then return end
-    
-    local posisiAsal = Tool:FindFirstChild("Handle") and Tool.Handle.Position or karakter.HumanoidRootPart.Position
-    local posisiTujuan = Mouse.Hit.Position -- Jalur lurus normal ke arah kursor/tap HP
-    
-    -- Buat garis orange kilat pas peluru dilepas
-    BuatTracerLine(posisiAsal, posisiTujuan)
+-- ==================================================
+-- MENAMBAHKAN TOMBOL AKTIVASI KE TAB
+-- ==================================================
+
+AddButton(MainTab, "Tracer Line: OFF (Click to Toggle)", function(self)
+    TracerEnabled = not TracerEnabled
+    local btn = MainTab:FindFirstChild("Tracer Line: OFF (Click to Toggle)") or MainTab:FindFirstChild("Tracer Line: ON")
+    if TracerEnabled then
+        btn.Text = "Tracer Line: ON"
+        btn.TextColor3 = Color3.fromRGB(255, 120, 0) -- Text jadi orange kalau aktif
+    else
+        btn.Text = "Tracer Line: OFF (Click to Toggle)"
+        btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+        if ActiveTracer then ActiveTracer:Destroy() end
+    end
 end)
 
-Tool.Unequipped:Connect(function() ScreenGui.Enabled = false end)
-Tool.Equipped:Connect(function() ScreenGui.Enabled = true end)
+-- Notifikasi Berhasil di-inject ke Delta
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "Violence District",
+    Text = "UI & Tracer Line Ready!",
+    Duration = 3
+})

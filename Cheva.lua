@@ -1,147 +1,129 @@
--- [[ CHEVA HUB - PREMIUM EDITION ]] --
+-- [[ CHEVA HUB - PREMIUM & AESTHETIC ]] --
+-- UI Library: Fluent (Paling mirip sama yang kamu mau)
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
--- MEMBUAT WINDOW UTAMA
+-- 1. KONFIGURASI WINDOW
 local Window = Fluent:CreateWindow({
     Title = "Cheva Hub",
     SubTitle = "Premium Edition",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
+    Acrylic = true, 
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Tombol untuk Buka/Tutup UI (Open/Close)
+    MinimizeKey = Enum.KeyCode.LeftControl -- INI TOMBOL BUKA TUTUPNYA (L-CTRL)
+})
+
+-- Notifikasi Cara Buka Tutup
+Fluent:Notify({
+    Title = "Cheva Hub Loaded!",
+    Content = "Tekan 'Left Control' untuk Buka/Tutup Menu!",
+    Duration = 5
 })
 
 ---------------------------------------------------------
--- TAB 1: SYSTEM KEY (VERIFIKASI)
+-- TAB 1: LOGIN (KEY SYSTEM)
 ---------------------------------------------------------
-local KeyTab = Window:AddTab({ Title = "Key System", Icon = "key" })
+local LoginTab = Window:AddTab({ Title = "Login", Icon = "key" })
 
-KeyTab:AddParagraph({
-    Title = "Verification Required",
-    Content = "Masukkan Key 'ChevaHub' untuk membuka semua fitur."
+LoginTab:AddParagraph({
+    Title = "System Verification",
+    Content = "Masukkan Key untuk akses fitur Premium."
 })
 
-local KeyInput = KeyTab:AddInput("InputKey", {
-    Title = "Enter Key",
+local KeyValue = ""
+local KeyInput = LoginTab:AddInput("InputKey", {
+    Title = "Enter Key Here",
     Default = "",
-    Placeholder = "Ketik key disini...",
+    Placeholder = "Key: ChevaHub",
     Numeric = false,
     Finished = true,
+    Callback = function(Value)
+        KeyValue = Value
+    end
 })
 
--- Sembunyikan tab fitur lain sebelum key dimasukkan benar
-local Tabs = {}
-local KeyVerified = false
+LoginTab:AddButton({
+    Title = "Check Key",
+    Description = "Klik untuk verifikasi key kamu",
+    Callback = function()
+        if KeyValue == "ChevaHub" then
+            Fluent:Notify({Title = "Success", Content = "Key Benar! Fitur Terbuka.", Duration = 3})
+            LoadFeatures() -- Jalankan fungsi buka fitur
+        else
+            Fluent:Notify({Title = "Error", Content = "Key Salah! Coba lagi.", Duration = 3})
+        end
+    end
+})
 
-local function UnlockTabs()
-    if KeyVerified then return end
-    KeyVerified = true
+---------------------------------------------------------
+-- FUNGSI UNTUK MEMUAT SEMUA FITUR (SETELAH KEY BENAR)
+---------------------------------------------------------
+function LoadFeatures()
     
-    Fluent:Notify({
-        Title = "Cheva Hub",
-        Content = "Key 'ChevaHub' Verified! All tabs loaded.",
-        Duration = 4
-    })
-
-    ---------------------------------------------------------
-    -- TAB 2: MAIN
-    ---------------------------------------------------------
-    Tabs.Main = Window:AddTab({ Title = "Main", Icon = "home" })
+    -- TAB: MAIN
+    local MainTab = Window:AddTab({ Title = "Main", Icon = "home" })
     
-    local ConfigName = ""
-    Tabs.Main:AddInput("ConfigInput", {
+    MainTab:AddInput("ConfigName", {
         Title = "Config Name",
         Default = "",
-        Placeholder = "Masukkan nama config...",
-        Numeric = false,
-        Finished = true,
-        Callback = function(Value)
-            ConfigName = Value
-        end
+        Placeholder = "Ketik nama config...",
+        Callback = function(Value) _G.ConfigName = Value end
     })
 
-    Tabs.Main:AddInput("SpeedInput", {
-        Title = "WalkSpeed",
+    MainTab:AddInput("SpeedInput", {
+        Title = "Speed Value",
         Default = "16",
-        Placeholder = "Ketik angka speed...",
+        Placeholder = "Contoh: 50",
         Numeric = true,
-        Finished = true,
         Callback = function(Value)
-            local num = tonumber(Value)
-            if num and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = num
+            if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(Value)
             end
         end
     })
 
-    ---------------------------------------------------------
-    -- TAB 3: SURVIVOR
-    ---------------------------------------------------------
-    Tabs.Survivor = Window:AddTab({ Title = "Survivor", Icon = "user" })
+    -- TAB: SURVIVOR
+    local SurvTab = Window:AddTab({ Title = "Survivor", Icon = "user" })
     
-    local AimlockToggle = Tabs.Survivor:AddToggle("Aimlock", {Title = "Aimlock (Lock Killer)", Default = false})
-    local TracerLineToggle = Tabs.Survivor:AddToggle("TracerLine", {Title = "Treacher Line (Red Line on Hit)", Default = false})
-    local SilentAimToggle = Tabs.Survivor:AddToggle("SilentAim", {Title = "Silent Aim (Bullet Redirect)", Default = false})
+    SurvTab:AddToggle("Aimlock", {Title = "Aimlock (Lock Killer)", Default = false, Callback = function(v) _G.Aimlock = v end})
+    SurvTab:AddToggle("TracerLine", {Title = "Treacher Line (Red Line Hit)", Default = false, Callback = function(v) _G.TracerLine = v end})
+    SurvTab:AddToggle("SilentAim", {Title = "Silent Aim (Bisa Belok)", Default = false, Callback = function(v) _G.SilentAim = v end})
 
-    AimlockToggle:OnChanged(function() _G.Aimlock = AimlockToggle.Value end)
-    TracerLineToggle:OnChanged(function() _G.TracerLineHit = TracerLineToggle.Value end)
-    SilentAimToggle:OnChanged(function() _G.SilentAim = SilentAimToggle.Value end)
-
-    ---------------------------------------------------------
-    -- TAB 4: KILLER
-    ---------------------------------------------------------
-    Tabs.Killer = Window:AddTab({ Title = "Killer", Icon = "skull" })
+    -- TAB: KILLER
+    local KillTab = Window:AddTab({ Title = "Killer", Icon = "skull" })
     
-    local NoSlowToggle = Tabs.Killer:AddToggle("NoSlowdown", {Title = "No Slowdown", Default = false})
-    local InfLagueToggle = Tabs.Killer:AddToggle("InfLague", {Title = "Infinite Lague", Default = false})
-    local InfAttackToggle = Tabs.Killer:AddToggle("InfAttack", {Title = "Infinite Attack", Default = false})
+    KillTab:AddToggle("NoSlow", {Title = "No Slowdown", Default = false, Callback = function(v) _G.NoSlow = v end})
+    KillTab:AddToggle("InfLague", {Title = "Infinite Lague", Default = false, Callback = function(v) _G.InfLague = v end})
+    KillTab:AddToggle("InfAttack", {Title = "Infinite Attack", Default = false, Callback = function(v) _G.InfAttack = v end})
 
-    NoSlowToggle:OnChanged(function() _G.NoSlowdown = NoSlowToggle.Value end)
-    InfLagueToggle:OnChanged(function() _G.InfLague = InfLagueToggle.Value end)
-    InfAttackToggle:OnChanged(function() _G.InfAttack = InfAttackToggle.Value end)
-
-    ---------------------------------------------------------
-    -- TAB 5: VISUAL
-    ---------------------------------------------------------
-    Tabs.Visual = Window:AddTab({ Title = "Visual", Icon = "eye" })
+    -- TAB: VISUAL
+    local VisualTab = Window:AddTab({ Title = "Visual", Icon = "eye" })
     
-    local ChamsKiller = Tabs.Visual:AddToggle("ChamsKiller", {Title = "Chams Killer (Red)", Default = false})
-    local ChamsGen = Tabs.Visual:AddToggle("ChamsGen", {Title = "Chams Generator (Yellow)", Default = false})
-    local ChamsSurv = Tabs.Visual:AddToggle("ChamsSurv", {Title = "Chams Survivor (Green)", Default = false})
-    local FullBright = Tabs.Visual:AddToggle("FullBright", {Title = "Full Bright (Layar Terang)", Default = false})
-    local TracerVisual = Tabs.Visual:AddToggle("TracerVisual", {Title = "Treacher Line (Killer & Survivor)", Default = false})
-    local Box3D = Tabs.Visual:AddToggle("Box3D", {Title = "Box 3D (Transparent Center)", Default = false})
-
-    -- Logika Full Bright
+    VisualTab:AddToggle("ChamsK", {Title = "Chams Killer (Merah)", Default = false, Callback = function(v) _G.ChamsK = v end})
+    VisualTab:AddToggle("ChamsG", {Title = "Chams Generator (Kuning)", Default = false, Callback = function(v) _G.ChamsG = v end})
+    VisualTab:AddToggle("ChamsS", {Title = "Chams Survivor (Hijau)", Default = false, Callback = function(v) _G.ChamsS = v end})
+    
     local Lighting = game:GetService("Lighting")
-    local OldBrightness = Lighting.Brightness
-    local OldClockTime = Lighting.ClockTime
-    
-    FullBright:OnChanged(function()
-        if FullBright.Value then
-            Lighting.Brightness = 10
-            Lighting.ClockTime = 14
-            Lighting.GlobalShadows = false
-        else
-            Lighting.Brightness = OldBrightness
-            Lighting.ClockTime = OldClockTime
-            Lighting.GlobalShadows = true
+    VisualTab:AddToggle("FullBright", {Title = "Full Bright (Terang)", Default = false, 
+        Callback = function(Value)
+            if Value then
+                Lighting.Brightness = 5
+                Lighting.ClockTime = 14
+                Lighting.GlobalShadows = false
+            else
+                Lighting.Brightness = 1
+                Lighting.ClockTime = 12
+                Lighting.GlobalShadows = true
+            end
         end
-    end)
+    })
 
-    ChamsKiller:OnChanged(function() _G.ChamsKiller = ChamsKiller.Value end)
-    ChamsGen:OnChanged(function() _G.ChamsGen = ChamsGen.Value end)
-    ChamsSurv:OnChanged(function() _G.ChamsSurv = ChamsSurv.Value end)
-    TracerVisual:OnChanged(function() _G.TracerVisual = TracerVisual.Value end)
-    Box3D:OnChanged(function() _G.Box3D = Box3D.Value end)
+    VisualTab:AddToggle("TracerVis", {Title = "Treacher Line (Visual)", Default = false, Callback = function(v) _G.TracerVis = v end})
+    VisualTab:AddToggle("Box3D", {Title = "Box 3D (Transparent)", Default = false, Callback = function(v) _G.Box3D = v end})
+
+    -- Pindah ke Tab Main otomatis setelah login
+    Window:SelectTab(2)
 end
 
--- Cek input Key secara real-time
-KeyInput:OnChanged(function()
-    if KeyInput.Value == "ChevaHub" then
-        UnlockTabs()
-    end
-end)
-
+-- OTOMATIS PILIH TAB LOGIN SAAT PERTAMA LOAD
 Window:SelectTab(1)

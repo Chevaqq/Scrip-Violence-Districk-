@@ -1,17 +1,17 @@
--- [[ VIOLENCE DISTRICT SCRIPT HUB - FIXED FOR DELTA MOBILE ]] --
+-- [[ VIOLENCE DISTRICT SCRIPT HUB - REAL SHOT DETECTION ]] --
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
 
 -- Bersihkan UI lama jika ada
 if PlayerGui:FindFirstChild("ViolenceDistrictUI") then
     PlayerGui.ViolenceDistrictUI:Destroy()
 end
 
--- 1. MAIN SCREEN GUI (Pindah ke PlayerGui biar pasti muncul)
+-- 1. MAIN SCREEN GUI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ViolenceDistrictUI"
 ScreenGui.Parent = PlayerGui
@@ -33,7 +33,7 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
 MainCorner.Parent = MainFrame
 
--- [[ SCRIPT DRAG MANUAL ANTI-LAG UNTUK HP ]] --
+-- [[ SCRIPT DRAG MANUAL ]] --
 local dragging, dragInput, dragStart, startPos
 local function update(input)
     local delta = input.Position - dragStart
@@ -54,7 +54,7 @@ MainFrame.InputChanged:Connect(function(input)
         dragInput = input
     end
 end)
-UserInputService.InputChanged:Connect(function(input)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
     if input == dragInput and dragging then update(input) end
 end)
 
@@ -71,11 +71,11 @@ Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = MainFrame
 
--- 4. BUTTON TOGGLE OPEN/CLOSE (Dipojokkan agar pas di HP)
+-- 4. BUTTON TOGGLE OPEN/CLOSE
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Name = "ToggleBtn"
 ToggleBtn.Size = UDim2.new(0, 70, 0, 30)
-ToggleBtn.Position = UDim2.new(0, 15, 0, 100) -- Di bawah tombol chat bawaan Roblox
+ToggleBtn.Position = UDim2.new(0, 15, 0, 100)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
 ToggleBtn.Text = "CLOSE"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -87,25 +87,6 @@ ToggleBtn.Parent = ScreenGui
 local ToggleCorner = Instance.new("UICorner")
 ToggleCorner.CornerRadius = UDim.new(0, 6)
 ToggleCorner.Parent = ToggleBtn
-
--- Drag manual khusus Tombol Open/Close
-local tDragging, tDragStart, tStartPos
-ToggleBtn.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        tDragging = true
-        tDragStart = input.Position
-        tStartPos = ToggleBtn.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then tDragging = false end
-        end)
-    end
-end)
-UserInputService.InputChanged:Connect(function(input)
-    if tDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local delta = input.Position - tDragStart
-        ToggleBtn.Position = UDim2.new(tStartPos.X.Scale, tStartPos.X.Offset + delta.X, tStartPos.Y.Scale, tStartPos.Y.Offset + delta.Y)
-    end
-end)
 
 ToggleBtn.MouseButton1Click:Connect(function()
     if MainFrame.Visible then
@@ -203,28 +184,23 @@ local function AddButton(parentPage, text, callback)
 end
 
 -- ==================================================
--- MECHANIC: TRACER LINE LOCK KILLER
+-- MECHANIC: TRACER LINE DETEKSI PELURU (ANTI MATAKAN)
 -- ==================================================
 local TracerEnabled = false
 local ActiveTracer = nil
 
--- Deteksi icon/target "Killer" di game secara dinamis
 local function GetKillerTarget()
-    -- Cek icon merah di atas kepala player (seperti gambar yang kamu kirim)
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            -- Deteksi BillboardGui atau icon di atas karakter
             if player.Character:FindFirstChildOfClass("BillboardGui") or player.Character:FindFirstChild("Head") and player.Character.Head:FindFirstChildOfClass("BillboardGui") then
                 return player.Character.HumanoidRootPart
             end
-            -- Deteksi folder status game (IsKiller / KillerTeam)
             if player:FindFirstChild("Killer") or (player.Team and string.find(player.Team.Name:lower(), "kill")) then
                 return player.Character.HumanoidRootPart
             end
         end
     end
     
-    -- Jaga-jaga kalau target murni belum ketemu, lock player lain terdekat
     local closest = nil
     local dist = math.huge
     for _, p in pairs(Players:GetPlayers()) do
@@ -242,9 +218,9 @@ local function CreateOrangeLine(targetPart)
     local Line = Instance.new("Part")
     Line.Anchored = true
     Line.CanCollide = false
-    Line.Color = Color3.fromRGB(255, 110, 0) -- Orange Neon Lurus
+    Line.Color = Color3.fromRGB(255, 110, 0) -- Orange Neon
     Line.Material = Enum.Material.Neon
-    Line.Parent = workspace
+    Line.Parent = Workspace
     ActiveTracer = Line
 
     local conn
@@ -262,19 +238,47 @@ local function CreateOrangeLine(targetPart)
     end)
 end
 
-UserInputService.InputBegan:Connect(function(input, processed)
-    if processed or not TracerEnabled then return end
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        local target = GetKillerTarget()
-        if target then
-            CreateOrangeLine(target)
-            task.wait(0.12) -- Menghilang instan setelah peluru sampai target
-            if ActiveTracer then ActiveTracer:Destroy(); ActiveTracer = nil end
+-- DETEKSI TEMBAKAN ASLI (Mendeteksi saat senjata mengeluarkan peluru/efek)
+local function MonitorShooting()
+    -- Mendeteksi objek baru yang muncul di Workspace (biasanya peluru ber-name Bullet, Projectile, dll)
+    Workspace.ChildAdded:Connect(function(child)
+        if not TracerEnabled then return end
+        
+        -- Deteksi jika peluru dicreate game saat menembak
+        if child:IsA("Part") or child:IsA("MeshPart") then
+            local name = child.Name:lower()
+            if string.find(name, "bullet") or string.find(name, "peluru") or string.find(name, "part") then
+                local target = GetKillerTarget()
+                if target then
+                    CreateOrangeLine(target)
+                    task.wait(0.12) -- Langsung hilang begitu peluru sampai target
+                    if ActiveTracer then ActiveTracer:Destroy(); ActiveTracer = nil end
+                end
+            end
         end
-    end
-end)
+    end)
 
--- Tombol Aktivasi Fitur
+    -- Alternatif deteksi: Jika game memasukkan efek peluru di dalam tool/senjata karakter
+    LocalPlayer.CharacterAdded:Connect(function(char)
+        char.DescendantAdded:Connect(function(descendant)
+            if not TracerEnabled then return end
+            -- Mendeteksi efek suara "Shot", "Fire", atau efek visual "Muzzle" pas nembak
+            if descendant:IsA("Sound") and (string.find(descendant.Name:lower(), "shot") or string.find(descendant.Name:lower(), "fire")) then
+                local target = GetKillerTarget()
+                if target then
+                    CreateOrangeLine(target)
+                    task.wait(0.12)
+                    if ActiveTracer then ActiveTracer:Destroy(); ActiveTracer = nil end
+                end
+            end
+        end)
+    end)
+end
+
+-- Jalankan fungsi monitor tembakan
+MonitorShooting()
+
+-- Tombol Aktivasi
 local ToggleTracerBtn = AddButton(MainTab, "Tracer Line: OFF", function()
     TracerEnabled = not TracerEnabled
     if TracerEnabled then

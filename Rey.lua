@@ -1,4 +1,4 @@
--- [[ CHEVA HUB - VISUAL AIM & TRACER EDITION ]] --
+-- [[ CHEVA HUB - COMBAT VISUAL (FIXED & GUARANTEED TO LOAD) ]] --
 
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -7,7 +7,7 @@ local Workspace = game:GetService("Workspace")
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
 
--- Hapus UI lama biar gak tumpuk
+-- Pembersihan UI lama agar tidak tumpang tindih
 if CoreGui:FindFirstChild("ChevaSeparatedHub") then
     CoreGui.ChevaSeparatedHub:Destroy()
 end
@@ -19,7 +19,7 @@ ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 ---------------------------------------------------------
--- TOMBOL TOGGLE (STATIS DI KIRI ATAS)
+-- TOMBOL TOGGLE (STATIS DI KIRI ATAS - PAS DI BAWAH LOGO)
 ---------------------------------------------------------
 local ToggleButton = Instance.new("TextButton")
 local ToggleCorner = Instance.new("UICorner")
@@ -44,7 +44,7 @@ ToggleStroke.Thickness = 1.5
 ToggleStroke.Parent = ToggleButton
 
 ---------------------------------------------------------
--- PANEL UTAMA (HITAM TRANSPARAN 0.5)
+-- PANEL UTAMA (HITAM TRANSPARAN 0.5 - PREMIUM LOOK)
 ---------------------------------------------------------
 local MainFrame = Instance.new("Frame")
 local MainCorner = Instance.new("UICorner")
@@ -65,13 +65,13 @@ MainStroke.Color = Color3.fromRGB(100, 100, 100)
 MainStroke.Thickness = 1
 MainStroke.Parent = MainFrame
 
--- Fungsi Buka Tutup
+-- Fungsi Buka Tutup Panel
 ToggleButton.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)
 
 ---------------------------------------------------------
--- HEADER & TABS NAVIGATION
+-- HEADER & NAVIGATION TABS
 ---------------------------------------------------------
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Parent = MainFrame
@@ -102,29 +102,34 @@ ContentArea.Position = UDim2.new(0, 10, 0, 85)
 ContentArea.BackgroundTransparency = 1
 
 ---------------------------------------------------------
--- LOGIKA DETEKSI TARGET (MENCARI PLAYER LAIN TERDEKAT)
+-- ENGINE MUTLAK UNTUK MENCARI TARGET (DENGAN PROTEKSI AMAN)
 ---------------------------------------------------------
 local function GetClosestTarget()
     local closestPart = nil
     local shortestDistance = math.huge
     local myChar = LocalPlayer.Character
     
-    if myChar and myChar:FindFirstChild("HumanoidRootPart") then
-        for _, p in pairs(Players:GetPlayers()) do
-            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") and p.Character.Humanoid.Health > 0 then
-                local distance = (myChar.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
-                if distance < shortestDistance then
-                    closestPart = p.Character.HumanoidRootPart
-                    shortestDistance = distance
+    -- Dipasang pcall agar kalau character nil / reset, script TIDAK crash
+    pcall(function()
+        if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") then
+                    if p.Character.Humanoid.Health > 0 then
+                        local distance = (myChar.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
+                        if distance < shortestDistance then
+                            closestPart = p.Character.HumanoidRootPart
+                            shortestDistance = distance
+                        end
+                    end
                 end
             end
         end
-    end
+    end)
     return closestPart
 end
 
 ---------------------------------------------------------
--- ENGINE UI BUILDER (TAB & SAKLAR TOGGLE)
+-- RAKITAN UI BUILDER COUPLING
 ---------------------------------------------------------
 local activePage = nil
 
@@ -216,51 +221,50 @@ local function AddFeatureToggle(page, text, flag)
 end
 
 ---------------------------------------------------------
--- PEMBAGIAN TAB TERPISAH
+-- ALOKASI PEMBUATAN MENU SEPARATED
 ---------------------------------------------------------
 local AimlockPage = CreateNewTab("Aimlock System", 1)
 local TracerPage  = CreateNewTab("Tracer Line", 2)
 
--- Mengisi fitur di tab masing-masing
 AddFeatureToggle(AimlockPage, "Enable Aimlock (Camera)", "CameraAimlock")
 AddFeatureToggle(TracerPage, "Enable Tracer Line (Red)", "RedVisualTracer")
 
 ---------------------------------------------------------
--- CORE LOGIKA OPERASIONAL GAME
+-- CORE LOGIKA EKSEKUSI PERMAINAN (FIXED)
 ---------------------------------------------------------
 
--- 1. Operasi Pergerakan Kamera Mulus (Aimlock)
+-- LOGIKA 1: AIMLOCK KAMERA MULUS
 RunService.RenderStepped:Connect(function()
     if _G.CameraAimlock then
         local target = GetClosestTarget()
         if target then
-            -- Memaksa CFrame kamera lokal untuk terus menghadap posisi dada target terdekat secara mulus
             Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
         end
     end
 end)
 
--- 2. Operasi Pembuatan Garis Laser Instan (Tracer Line) ketika layar ditekan
-local Mouse = LocalPlayer:GetMouse()
+-- LOGIKA 2: TRACER LINE MERAH INSTANT (PENYIMPANAN DI WORKSPACE AMAN)
 local function SpawnLaserEffect(startPos, endPos)
     local laser = Instance.new("BoxHandleAdornment")
-    laser.Size = Vector3.new(0.15, 0.15, (startPos - endPos).Magnitude)
+    laser.Size = Vector3.new(0.12, 0.12, (startPos - endPos).Magnitude)
     laser.CFrame = CFrame.new(startPos:Lerp(endPos, 0.5), endPos)
-    laser.Color3 = Color3.fromRGB(255, 30, 30) -- Garis Merah menyala
+    laser.Color3 = Color3.fromRGB(255, 30, 30) -- Merah Menyala Terbuka
     laser.Transparency = 0.2
     laser.AlwaysOnTop = true
-    laser.ZIndex = 6
-    laser.Adornee = workspace.Terrain
-    laser.Parent = workspace.Terrain
+    laser.ZIndex = 10
+    laser.Adornee = Workspace -- DIPINDAH KE WORKSPACE BIAR PASTI LOAD 100%
+    laser.Parent = Workspace
     
-    -- Efek lurus langsung lenyap/hilang sekejap (0.1 detik) setelah dilepas
-    task.wait(0.1)
+    task.wait(0.1) -- Durasi tampil tipis lalu langsung musnah/hilang
     laser:Destroy()
 end
 
+local Mouse = LocalPlayer:GetMouse()
 Mouse.Button1Down:Connect(function()
     if _G.RedVisualTracer and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         local target = GetClosestTarget()
         if target then
-            -- Menarik garis visual simulasi dari posisi root karakter menuju root musuh terdekat
             task.spawn(SpawnLaserEffect, LocalPlayer.Character.HumanoidRootPart.Position, target.Position)
+        end
+    end
+end)

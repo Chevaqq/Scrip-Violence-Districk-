@@ -1,20 +1,20 @@
--- [[ VIOLENCE DISTRICT SILENT AIM & TRACER - ZENTAZZ STYLE ]] --
+-- [[ VIOLENCE DISTRICT SILENT AIM & TRACER - RE-FIXED ]] --
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 
--- Bersihkan UI lama
-if PlayerGui:FindFirstChild("ViolenceDistrictUI") then
-    PlayerGui.ViolenceDistrictUI:Destroy()
+-- Memastikan UI masuk ke CoreGui dengan aman biar GAK HILANG pas pindah game/spawn
+local CoreGui = game:GetService("CoreGui")
+if CoreGui:FindFirstChild("ViolenceDistrictUI") then
+    CoreGui.ViolenceDistrictUI:Destroy()
 end
 
--- 1. MAIN SCREEN GUI
+-- 1. MAIN SCREEN GUI (ResetOnSpawn = false agar anti-hilang)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ViolenceDistrictUI"
-ScreenGui.Parent = PlayerGui
+ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
 -- 2. MAIN FRAME (Hitam Transparan 0.5)
@@ -59,7 +59,7 @@ end)
 
 -- 3. TITLE BAR
 local Title = Instance.new("TextLabel")
-Title.Text = "VIOLENCE DISTRICT - ZENTAZZ"
+Title.Text = "VIOLENCE DISTRICT - FIXED"
 Title.Size = UDim2.new(1, -40, 0, 40)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
@@ -72,7 +72,7 @@ Title.Parent = MainFrame
 -- 4. BUTTON TOGGLE OPEN/CLOSE
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Size = UDim2.new(0, 70, 0, 30)
-ToggleBtn.Position = UDim2.new(0, 15, 0, 100)
+ToggleBtn.Position = UDim2.new(0, 15, 0, 140) -- Disesuaikan posisinya biar pas
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
 ToggleBtn.Text = "CLOSE"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -126,15 +126,14 @@ local function AddButton(text, callback)
 end
 
 -- ==================================================
--- CORE CODE: SILENT AIM & TRACER LINE (HOOKING METHOD)
+-- AM SAFE CORRECTION: SILENT AIM VIA MOUSE HOOK METHOD
 -- ==================================================
 local AimEnabled = false
 
--- Fungsi cari Killer di game Violence District
 local function GetKiller()
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            -- Deteksi tanda Killer (BillboardGui/Team/Name)
+            -- Deteksi tanda Killer
             if player.Character:FindFirstChildOfClass("BillboardGui") or player.Character:FindFirstChild("Head") and player.Character.Head:FindFirstChildOfClass("BillboardGui") then
                 return player.Character.HumanoidRootPart
             end
@@ -143,7 +142,8 @@ local function GetKiller()
             end
         end
     end
-    -- Fallback target terdekat kalau indikator di atas belum ke-load
+    
+    -- Fallback target terdekat
     local closest = nil
     local dist = math.huge
     for _, p in pairs(Players:GetPlayers()) do
@@ -155,58 +155,50 @@ local function GetKiller()
     return closest
 end
 
--- Fungsi bikin Garis Orange persis kayak di video
+-- Fungsi pembuat tracer line sekelebat pas nembak
 local function SpawnOrangeTracer(startPos, endPos)
     local Line = Instance.new("Part")
     Line.Anchored = true
     Line.CanCollide = false
-    Line.Color = Color3.fromRGB(255, 110, 0) -- Warna Orange Neon Menyala
+    Line.Color = Color3.fromRGB(255, 110, 0)
     Line.Material = Enum.Material.Neon
     Line.Parent = Workspace
 
     local mag = (endPos - startPos).Magnitude
-    Line.Size = Vector3.new(0.2, 0.2, mag) -- Sedikit tebal biar keliatan jelas pas nembak
+    Line.Size = Vector3.new(0.18, 0.18, mag)
     Line.CFrame = CFrame.new(startPos, endPos) * CFrame.new(0, 0, -mag/2)
 
-    -- Hilang instan setelah peluru sampai (kayak di video, cuma sekelebat)
     task.wait(0.1)
     Line:Destroy()
 end
 
--- HOOKING REMOTE: Membelokkan arah peluru asli game langsung ke Killer
+-- MOUSE INDEX HOOK (Bypass macet, peluru dijamin keluar lancar)
+local PlayerMouse = LocalPlayer:GetMouse()
 local gmt = getrawmetatable(game)
 setreadonly(gmt, false)
-local oldNamecall = gmt.__namecall
+local oldIndex = gmt.__index
 
-gmt.__namecall = newcclosure(function(self, ...)
-    local args = {...}
-    local method = getnamecallmethod()
-
-    if AimEnabled and (method == "FireServer" or method == "InvokeServer") then
-        -- Deteksi argumen posisi/target tembakan bawaan game
+gmt.__index = newcclosure(function(self, index)
+    -- Jika script senjata meminta posisi arah target Hit/X/Y dari mouse, arahkan ke Killer
+    if AimEnabled and self == PlayerMouse and (index == "Hit" or index == "Target") then
         local targetKiller = GetKiller()
         if targetKiller then
-            for i, arg in pairs(args) do
-                -- Jika game mengirim Vector3 (posisi tembak) atau CFrame, kita belokkan ke posisi Killer
-                if typeof(arg) == "Vector3" then
-                    -- Buat Tracer Line dari posisi tangan/karakter kita ke Killer
-                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        task.spawn(SpawnOrangeTracer, LocalPlayer.Character.HumanoidRootPart.Position, targetKiller.Position)
-                    end
-                    args[i] = targetKiller.Position
-                    return oldNamecall(self, unpack(args))
-                elseif typeof(arg) == "CFrame" then
-                    args[i] = CFrame.new(arg.Position, targetKiller.Position)
-                    return oldNamecall(self, unpack(args))
+            if index == "Hit" then
+                -- Munculkan Tracer Line dari posisi asal ke target secara instan
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    task.spawn(SpawnOrangeTracer, LocalPlayer.Character.HumanoidRootPart.Position, targetKiller.Position)
                 end
+                return targetKiller.CFrame
+            elseif index == "Target" then
+                return targetKiller.Parent:FindFirstChildOfClass("Humanoid") or targetKiller
             end
         end
     end
-    return oldNamecall(self, ...)
+    return oldIndex(self, index)
 end)
 setreadonly(gmt, true)
 
--- Tombol Toggle Aktifkan Aim
+-- Tombol Toggle
 local MainButton = AddButton("Silent Aim + Tracer: OFF", function(self)
     AimEnabled = not AimEnabled
     local btn = ContentContainer:FindFirstChildOfClass("TextButton")

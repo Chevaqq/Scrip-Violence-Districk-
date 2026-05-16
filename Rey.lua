@@ -1,3 +1,168 @@
-mom is puta 🤣
--- This script was generated using the MoonVeil Obfuscator v1.4.5 [https://moonveil.cc]
-local Uc,Ib,jd,Bc=getmetatable,pairs,bit32.bxor,type local ca,zc,O,Je,Vc,Fa,Ka,Db,lb,db,wb,Eb,Mc,se_,Qc,ya;Fa=(getfenv());ya,se_,wb=(string.char),(string.byte),(bit32 .bxor);Je=function(B,Td)local cb,Vb,x,sa,l_,me,Kd,Jc;Kd,Jc=function(ea,Zd,qa)Jc[ea]=jd(qa,5777)-jd(Zd,52623)return Jc[ea]end,{};me=Jc[15509]or Kd(15509,31105,49719)while me~=584 do if me>=28645 then if me>=43849 then if me<=43849 then return sa else me,sa=Jc[18704]or Kd(18704,13512,67166),sa..ya(wb(se_(B,(cb-181)+1),se_(Td,(cb-181)%#Td+1)))end else cb=Vb if l_~=l_ then me=Jc[28615]or Kd(28615,43647,66984)else me=10711 end end elseif me<=8344 then if me<=6024 then Vb=Vb+x;cb=Vb if Vb~=Vb then me=Jc[-22099]or Kd(-22099,62347,65500)else me=10711 end else sa='';Vb,l_,x,me=181,(#B-1)+181,1,28645 end else if(x>=0 and Vb>l_)or((x<0 or x~=x)and Vb<l_)then me=43849 else me=60017 end end end end;Ka,Vc=(string.gsub),(string.char);lb=(function(fb)fb=Ka(fb,'[^ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=]','')return(fb:gsub('.',function(Tb)if(Tb=='=')then return''end local Rd,tc='',(('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'):find(Tb)-1)for y=6,1,-1 do Rd=Rd..(tc%2^y-tc%2^(y-1)>0 and'1'or'0')end return Rd end):gsub('%d%d%d?%d?%d?%d?%d?%d?',function(rb)if(#rb~=8)then return''end local oa=0 for Be=1,8 do oa=oa+(rb:sub(Be,Be)=='1'and 2^(8-Be)or 0)end return Vc(oa)end))end)repeat Fa[Je('\138\49\141;','\254P')][Je('c)}<','\20H')]()until Fa[Je('\245*\255.','\146K')][Je('}\251:\200U\236\19\195','4\136v\167')](Fa[Je('\245*\255.','\146K')])and Fa[Je('\157\55\151\51','\250V')][Je('T\191\55\197\144a\172*\245\144','\19\218C\150\245')](Fa[Je('\157\55\151\51','\250V')],Je('$\96\145\ri\130\a','t\f\240'))[Je('\\\198\254#\192@\197\252;\201b','\16\169\157B\172')]local Ca=Fa[Je('\227\96\27\25\229~\17\17','\128\ftw')]or function(o_)return o_ end local Ke,U,ld,gd,Rc,na=Ca(Fa[Je('s y$','\20A')][Je('5\27\170)\\\0\b\183\25\\','r~\222z9')](Fa[Je('s y$','\20A')],Je('\144\96!\241\154\189f#\232\170\189','\216\20U\129\201'))),Ca(Fa[Je('&F,B',"A\'")][Je('\200\bC\165x\253\27^\149x','\143m7\246\29')](Fa[Je('&F,B',"A\'")],Je('\6\211\17\54.\205\55\214\2:#\251','R\164tS@\158'))),Fa[Je('\144\\\154X','\247=')][Je('\16\242\31s\17%\225\2C\17','W\151k t')](Fa[Je('\144\\\154X','\247=')],Je('\136\214w\161\223d\171','\216\186\22'))[Je('\216\149\191\176\210\196\150\189\168\219\230','\148\250\220\209\190')],(Fa[Je(';\137\29\217P\237tS7\149\29\212Q\240}X','R\237x\183$\132\18*')]and Fa[Je('\131\212fq\0\179\249\186\143\200f|\1\174\240\177','\234\176\3\31t\218\159\195')]()==Je('\172\145\154\155','\244\244')),(Fa[Je('Mc\127\157\212\r\227\136A\127\127\144\213\16\234\131','$\a\26\243\160d\133\241')]and Fa[Je("\185\154\':\141B\138H\181\134\'\55\140_\131C",'\208\254BT\249+\236\49')]()==Je("\vE\'\57X*",'X*K')),Ca(Fa[Je('D5N1','#T')][Je('\168\253\171\161B\157\238\182\145B',"\239\152\223\242\'")](Fa[Je('D5N1','#T')],Je('\31M\167\224\187\50K\165\249\139\50','W9\211\144\232')))if not(Fa[Je('\173l\218\173l\192\188','\202\t\174')]()[Je('\128d\22i{\30\31\1\170H\3|t\14\56\20\183','\211\r{\25\23{Lq')]or Fa[Je('S\250%S\250?B','4\159Q')]()[Je('K\170\2\197bQ\160\235\212\154y\187;\212lX\150\200\196\173}','\24\195o\181\14\52\243\155\173\215')]or Fa[Je('i\201\25i\201\3x','\14\172m')]()[Je('\166Y\203~\217\189\143\165I\197a\219\190\149\178','\245\16\134.\149\248\220')]or Fa[Je('\194\2\179\194\2\169\211','\165g\199')]()[Je('\226\49w\96\221=I\96\200','\177X\26\16')]or Fa[Je('\4\143 \4\143:\21','c\234T')]()[Je('N\22<R\207yn\215d,9W\215xR\208s','\29\127Q\"\163\28=\167')]or Fa[Je('\196\211\50\196\211(\213','\163\182F')]()[Je('\146q\255/C\20\a\244\236f\184\185K\230-F\31\51\215\252Q\188','\193\24\146_/qT\132\149+\217')])then else return ld[Je('\29(5*','VA')](ld,Je("\247m\238\5l\135\226\'\191\176>\23\23\137\54i\240h\229EF\170\253a\222\152.\b\29\181&+",'\163\24\156kL\232\132A\159\226[zx\253SI'))end if not(Fa[Je('\172\253M\172\253W\189','\203\152\57')]()[Je('\165<i\246(\174#b\235#\160','\196F\1\159F')])then else return end Fa[Je('D}\168D}\178U','#\24\220')]()[Je('4\223\164\127\v?\192\175b\0\49','U\165\204\22e')]=true;Fa[Je('\bH\15B','|)')][Je('\v?\3;\22','oZ')](10,function()Fa[Je("b\6=b\6\'s",'\5cI')]()[Je('\177\t\164\16\173','\212d')]=function(A)return A end;Fa[Je('\96\146\193\96\146\219q','\a\247\181')]()[Je('Q\131H\159U','!\241')],Fa[Je('\216\208)\216\208\51\201','\191\181]')]()[Je('x\220}\211','\15\189')],Fa[Je('\169\237\189\169\237\167\184','\206\136\201')]()[Je('\162\222\181\195\181','\199\172')]=Fa[Je('h\135\177h\135\171y','\15\226\197')]()[Je('\28\136\t\145\0','y\229')],Fa[Je('\128\210Y\128\210C\145','\231\183-')]()[Je('\138\56\159!\150','\239U')],Fa[Je('\242\bR\242\bH\227','\149m&')]()[Je('\198\142\211\151\218','\163\227')]end)local kd=Fa[Je('\146\233\217@G\138\244\209JS','\254\134\184$4')](Fa[Je('\204\146\198\150','\171\243')][Je('\215u[\239FJ\235','\159\1/')](Fa[Je('\204\146\198\150','\171\243')],Je('9{4\\:Z\238\227[\173+\r\228\173F\197< 3H\"O\173\165S\177!\22\248\173I\223\48','Q\15@,I\96\193\204\49\195@d\129\131%\170')))();kd[Je('\191?\202\186\51\219\169','\204Z\184')]=Je('\255\218\144Z\229\220\135\29','\140\191\226,');kd[Je('\212\131JR\218\212\129FY\220','\189\231/<\174')]=Je('\127\29|\31}','N.');kd[Je('\127\221m\186f\203g\190','\15\175\2\204')]=Je('!@\r\20\28\26?@\24\22\n\15?','M/n\127nj')local cd=Ca or function(e_)return e_ end local Wc,D,Hd,pc,ud,pe,ne,Qb=cd(Fa[Je('\192\163\202\167','\167\194')][Je('\197\209\31\185\233\240\194\2\137\233','\130\180k\234\140')](Fa[Je('\192\163\202\167','\167\194')],Je('\v\185\213\50\253\206:\188\198>\240\248','_\206\176W\147\157'))),cd(Fa[Je('\186=\176\57','\221\\')][Je('\25\t\167\159\153,\26\186\175\153','^l\211\204\252')](Fa[Je('\186=\176\57','\221\\')],Je('M\145:\96\56\217\53\243l\177:\96\a\222&\227','\24\226_\18q\183E\134'))),cd(Fa[Je('\234Y\224]','\141\56')][Je('\229U\221\129<\208F\192\177<','\162\48\169\210Y')](Fa[Je('\234Y\224]','\141\56')],Je('\6\a)=k&\4.\rk','TrGn\14'))),cd(Fa[Je('\201\186\195\190','\174\219')][Je('\192\163k\228\137\245\176v\212\137','\135\198\31\183\236')](Fa[Je('\201\186\195\190','\174\219')],Je('D\180lm\189\127g','\20\216\r'))),cd(Fa[Je('~\233t\237','\25\136')][Je('\191\247>\203\237\138\228#\251\237','\248\146J\152\136')](Fa[Je('~\233t\237','\25\136')],Je('Y7\247Ea7\254J','\21^\144-'))),cd(Fa[Je('\248\t\242\r','\159h')][Je('1I\240lm\4Z\237\\m','v,\132?\b')](Fa[Je('\248\t\242\r','\159h')],Je('!A<\226\249\fG>\251\201\f','i5H\146\170'))),cd(Fa[Je('.\128$\132','I\225')][Je('i:\27\50\159\\)\6\2\159','._oa\250')](Fa[Je('.\128$\132','I\225')],Je('\141\141\239\171\165\232\167','\206\226\157'))),{[Je('\239\172m\217\168\96','\188\196\4')]=Je('\4\186$\218FI\225L\138\218nbw\228F\237j\138\f\n\180\15\211\138eym\231','v\216\\\187\53:\132\56\227\190TMX\213'),[Je('\226\24[\202\30T\201','\174w:')]=Je('a6\29w\225\189\19\152\26%\239o\23\202\"bP%\167\249G\222Dy\236y\f\206','\19Te\22\146\206v\236sA\213@8\251'),[Je('\158\135\177\131','\210\232')]=Je('\210&#\224\174e4j\254Q\128\216\49\250\145ph\180\232&g-\162\4\143\195)\248','\160D[\129\221\22Q\30\151\53\186\247\30\203'),[Je('\201\231\251','\130')]=Je('\5\177\244\135\221)\134\187\26\243\26\137hN\224\185\208\151n\213\247E\160\24\146uD','w\211\140\230\174Z\227\207s\151 \166G'),[Je('7\168\17\163\31','t\192')]=Je('4Z^P^\212Q\130\t\240\230)\0\143w\1\17\t\30\151\1\197Y\165\234>\29\141','F8&1-\167\52\246\96\148\220\6/\190'),[Je('\151c\196\134C\151b\211\134D\177','\212\v\161\229(')]=Je("+\146\147\167\15\130\201+\137\207)\166v\193\219\241L\200\155f\208\157\'\189",'Y\240\235\198|\241\172_\224\171\19\137'),[Je('\207\140\212\229\172\209\242','\151\207\189')]=Je('\241\244>\150*+<4\22\20\207\139\172\167v\192mojxKC\204\144','\131\150F\247YXY@\127p\245\164'),[Je('\158\201\140\167\193\144\174','\201\168\254')]=Je('o\219\49n\173\22\250\30\242\235\190\172\199\133.\137{=\232P\168Y\162\185\182\181\220\132','\29\185I\15\222e\159j\155\143\132\131\232\180'),[Je('O\ng\4m','\bf')]=Je('\204\226a\190\218\192\159K\162\192@|\145\177)\232\154\135\195\n\251\151Jj','\190\128\25\223\169\179\250?\203\164zS'),[Je('\146O\189N','\219!')]=Je('\2\163+\222\16bi\18\20\27\16LTI\245f\141Z$8WDF\29QLH','p\193S\191c\17\ff}\127*c{'),[Je('?R4\150\168\56\27F\f\154\180=','z*@\243\218V')]=Je('-vItF\19$\174\196\201m28h%\1&\rWr\238\158\156o(/o','_\20\49\21\53\96A\218\173\173W\29\23'),[Je('\207d\252r','\140\v')]=Je('\146d\162\171Kv\171X&$d\255\197b\208\49\238\242\r\48\250\24zqn\232\217c','\224\6\218\202\56\5\206,O@^\208\234S'),[Je('\165P\242\152N\254\132','\246 \155')]=Je('&\248\194\211\152e\142q\241n\31\174{\171\138\133\219/\220\51\175\50\23\182','T\154\186\178\235\22\235\5\152\n%\129'),[Je('6\196\4s\16\196\3w','r\165p\18')]=Je(' \15\25\203\20\247\151F{\233\213\25\152\190cYS\154^\179\198\n\"\188\223\4\129\190','Rma\170g\132\242\50\18\141\239\54\183\143'),[Je('\181g\213\240\141{\209\241','\230\23\180\130')]=Je('\19\173Q\nVg\247\18\138\128\f\171N\254\25\\\21-\165P\212\220\4\179','a\207)k%\20\146f\227\228\54\132'),[Je('\142\195\48\199:\141\222.\204-\185','\203\177B\168H')]=Je('X\203\193\212\217\187=:t\4\239\146\28Z\27\154\138\132\152\241h{*X\226\143\1[','*\169\185\181\170\200XN\29\96\213\189\51k'),[Je('D\5i\0~','\ad')]=Je('g\140V5\169{\130\235\211F\211\27:\223\30c\234\49\208\169\141\26\219\3','\21\238.T\218\b\231\159\186\"\233\52'),[Je('T\30V\212M]P\14O\246GWp','\30k8\191$8')]=Je(']\n\201\2\24\130\127\23Un\151\fo\24^\134Z^\196\"T\14>\148\26y\25','/h\177ck\241\26c<\n\173#@')}local function Ba()local Xb,Va,ze;Xb,Va,ze=Fa[Je('\147\252\130\243\143','\227\159')](function()return Fa[Je('\198\216\194\196','\178\161')](Fa[Je('\r/;\133\31;;\157\31','z]R\241')])==Je('d\221\16pv\193\17}','\2\168~\19')end),Fa[Je('^\139O\132B','.\232')](function()return Fa[Je('\249\227\253\255','\141\154')](Fa[Je('\129$\186\200\149(\183\201','\243A\219\172')])==Je('\138H\235\227\152T\234\238','\236=\133\128')end),Fa[Je('\142\242\159\253\146','\254\145')](function()return Fa[Je(',&(:','X_')](Fa[Je('\96\49\251\96.\248','\tB\157')])==Je('T\b\t\209F\20\b\220','2}g\178')end)return Xb and Va and ze end local Sa=Ba()local function De(gc)local Fe,xe,Oa,j;Fe,j={},function(Q,od,Lb)Fe[od]=jd(Lb,59021)-jd(Q,52844)return Fe[od]end;Oa=Fe[29816]or j(43137,29816,118028)while Oa~=60030 do if Oa>=45464 then if Oa<=45464 then return false else if not(not Sa)then Oa=Fe[-22037]or j(54904,-22037,9190)continue else Oa=Fe[-9642]or j(7478,-9642,90751)continue end Oa=44375 end else xe=Fa[Je('\21[\4T\t','e8')](function()Fa[Je('\26\195\232\186\b\215\232\162\b','m\177\129\206')](Je('\254Vn9\253\189\235\228\215Xy)\181\160\246\244','\136\51\28P\155\212\142\128'),gc)end)return xe end end end local function s_()local J,ec,Ua,Ee,ba;Ua,ec={},function(Fc,za,Zb)Ua[za]=jd(Fc,53801)-jd(Zb,11180)return Ua[za]end;Ee=Ua[-11306]or ec(121702,-11306,14922)repeat if Ee>33998 then if Ee>43355 then if not(not Sa)then Ee=Ua[8172]or ec(15142,8172,5144)continue else Ee=Ua[30453]or ec(13941,30453,22592)continue end Ee=43355 else ba,J=Fa[Je('\209\158\192\145\205','\161\253')](function()return Fa[Je('\191\183\21\165\171\187\24\164','\205\210t\193')](Je('\161BI\153\147w\244\160\136L^\137\219j\233\176',"\215\';\240\245\30\145\196"))end)if not(not ba or not J)then Ee=Ua[-8115]or ec(28956,-8115,13771)continue else Ee=Ua[9911]or ec(16384,9911,25456)continue end Ee=Ua[-18914]or ec(15175,-18914,20236)end elseif Ee>28784 then return J elseif Ee>18765 then return nil else return nil end until Ee==45095 end local function Zc()local dd,Yd,m,Wa;Yd,Wa={},function(sd,h,ke)Yd[h]=jd(ke,9335)-jd(sd,62868)return Yd[h]end;m=Yd[28426]or Wa(63032,28426,4886)repeat if m>25964 then return false elseif m>13237 then dd=Fa[Je(']VLYA','-5')](function()Fa[Je('\148\234\53\150\230\53\149','\240\143Y')](Je('\239\183\4*\192~\152\136\198\185\19:\136c\133\152','\153\210vC\166\23\253\236'))end)return dd else if not(not Sa)then m=Yd[29550]or Wa(14376,29550,71519)continue else m=Yd[9191]or Wa(57063,9191,35495)continue end m=Yd[-13970]or Wa(18766,-13970,67121)end until m==18361 end local Dd=D[Je('\15\228\232\n\1N5\234\255\5\fo','[\139\157ii\v')]and not D[Je('\18x\245\131Z\1\217=X\226\128W\f\206=','Y\29\140\225\53\96\171')]local Ga,Y={[Je('5fV\254M\130!pM\213I\129\3','f\5$\155(\236')]=Je('\169#\220)\155\53\209\31\143','\226F\165z'),[Je('\160\229}\147\227d','\247\140\19')]={[Je('\\Lu@','\15%')]=Dd and Fa[Je('K9w\16,','\30}')][Je('\14\5\23','\96')](0,310,0,360)or Fa[Je('\198?\250\22\161','\147{')][Je('\215\220\206','\185')](0,333,0,500)},[Je('x@\22T]\t',';/z')]={[Je('\21\48','W')]=Fa[Je('\207O\190\227R\225','\140 \210')][Je(':\186O1\154g\30','\\\200 ')](12,12,12),[Je('\146\"\232\175\49\243\187','\194P\129')]=Fa[Je('\198V\22\234KI','\133\57z')][Je('\15\190J\4\158b+','i\204%')](59,130,246),[Je(':\209\249gH\24\218\212k[\1','j\163\144\n)')]=Fa[Je('\6\200\200*\213\151','E\167\164')][Je('\202\127\151\193_\191\238','\172\r\248')](37,99,235),[Je('\163c\164\172$\131^\161\180\52','\240\23\197\216Q')]=Fa[Je('E\206\170i\211\245','\6\161\198')][Je('\217S\226\210s\202\253','\191!\141')](249,115,22),[Je('i\18\23\153\"%i\19\21\142\50%I',':fv\237WV')]=Fa[Je('\203\245\181\231\232\234','\136\154\217')][Je('\167\136:\172\168\18\131','\193\250U')](16,185,129),[Je('\16\128\224\206\238\48\177\243\200\244\49','C\244\129\186\155')]=Fa[Je('\247\v\194\219\22\157','\180d\174')][Je('!b\191*B\151\5','G\16\208')](239,68,68),[Je("\14\223\173$\16\'\170\56\217\165\54\28=\146:",']\171\204PeT\252')]=Fa[Je('xK\210TV\141',';$\190')][Je('+\234\t \202!\15','M\152f')](59,130,246),[Je('\26\0\127\\\29\240\30\21lF\1\237.','It\30(h\131')]=Fa[Je('\219\133\v\247\152T','\152\234g')][Je('\172\183\240\167\151\216\136','\202\197\159')](254,188,46),[Je('\158\167.\158\135\163?\132','\202\194V\234')]=Fa[Je('\248\";\212?d','\187MW')][Je('\219\51\242\208\19\218\255','\189A\157')](255,255,255),[Je('\178\140\21\146\186\b\133','\230\233m')]=Fa[Je('\188C\224\144^\191','\255,\140')][Je("\3\244\142\b\212\166\'",'e\134\225')](161,161,170),[Je('#\243\55v:\227;g\19','w\150O\2')]=Fa[Je('\255\211\198\211\206\153','\188\188\170')][Je('\2h\190\tH\150&','d\26\209')](113,113,122),[Je('ZJo|@o','\24%\29')]=Fa[Je('\247\199\175\219\218\240','\180\168\195')][Je('\163\139\5\168\171-\135','\197\249j')](255,255,255),[Je('\201\6\204\238\b\244\23\255\237\n','\157t\173\136n')]=Fa[Je('\192\51Y\236.\6','\131\\\53')][Je('\5\255\b\14\223 !','c\141g')](255,95,87),[Je('\212\154Uv\175\20\227\177Q|\165\18\247','\128\232\52\16\201}')]=Fa[Je('\185\218/\149\199p','\250\181C')][Je('\153\178N\146\146f\189','\255\192!')](254,188,46),[Je('F\197[w7Dq\240Ht4C','\18\183:\17Q-')]=Fa[Je('\254\145\28\210\140C','\189\254p')][Je('Do0OO\24\96','\"\29_')](40,200,64),[Je('\16\19B \3R0','Cf!')]=Fa[Je('r\153\50^\132m','1\246^')][Je('@\"\3K\2+d','&Pl')](50,205,110),[Je('Dtsis','\1\6')]=Fa[Je('\150w=\186jb','\213\24Q')][Je('\0a\247\vA\223$','f\19\152')](245,70,90),[Je('\127Y\236FQ\240O','(8\158')]=Fa[Je('\195\164\164\239\185\251','\128\203\200')][Je('\169\179\230\162\147\206\141','\207\193\137')](255,200,50)},[Je('\235\242\55\142.\\\238\29\140\199\238\53\139\57K\212\f\148','\169\157E\234K.\186o\237')]=0.14999999999999999,[Je('\191\57+h\158\138>-k\140','\254WB\5\255')]={[Je('\198\233\164c\214\237\165n','\144\140\214\26')]=0.10000000000000001,[Je('\142(\187=','\200I')]=0.20000000000000001,[Je('\145\211Q\181\195X','\220\182\53')]=0.40000000000000002,[Je('\243r\207i','\160\30')]=0.5,[Je('9_\227\174<V\254\160','o:\145\215')]=0.59999999999999998,[Je('\145\236Z\189\224J','\211\131/')]=0.59999999999999998},[Je('\16N8U%','V!')]={[Je('\194=\226\56\243','\150T')]=24,[Je('\221\149\15\254\231\148\1\239','\142\224m\138')]=12,[Je('v\147C@\137Y','4\230\55')]=14,[Je('s\205J\214N',':\163')]=16,[Je('\3\240%\230','A\159')]=13,[Je('\138\189\184\188\181','\217\208')]=11,[Je('\18\147(\131','F\250')]=12}},{};Y[Je('\246A\199S\204','\162\54')]=function(r_,da,ob,ab,a_)local fa_;fa_=Wc[Je('l\154\251N\156\251','/\232\158')](Wc,r_,Fa[Je('\217\250\158\142\227\196\149\141\226','\141\141\251\235')][Je('*!3','D')](ob or 0.29999999999999999,ab or Fa[Je('\188\229\140\230','\249\139')][Je('V\172\236Y#t\158\235I!v','\19\205\159\48M')][Je('C\240{\235f','\18\133')],a_ or Fa[Je('\173\251\157\248','\232\149')][Je('\169W^yZo\245\133DHs@a\222\130','\236\54-\16\52\b\177')][Je('\249\195\194','\182')]),da);fa_[Je('\243\28\194\t','\163p')](fa_)return fa_ end;Y[Je('\213\228\n\241\250\55\213\249\29\254\235 ','\150\150o\144\142R')]=function(v,xa)local C;C=Fa[Je('\167\237\216f\143\237\200w','\238\131\171\18')][Je('odv','\1')](Je("f\213\197:A\242\227\'",'3\156\134U'));C[Je('\143\243\50\30\v\186\158\253$\25\27\187','\204\156@pn\200')]=Fa[Je('Y(e\1','\fl')][Je('$/=','J')](0,xa or Ga[Je('\128\218y\v\243/\145\212o\f\227.','\195\181\ve\150]')]);C[Je('\200\217\20\253\214\18','\152\184f')]=v return C end;Y[Je('J8m9|','\24W')]=function(vc,Dc)local Ia;Ia=Fa[Je('\16\224\29C8\224\rR','Y\142n7')][Je('<7%','R')](Je('\153c\193\232\190D\231\245','\204*\130\135'));Ia[Je('\132\192\228(\158\183\149\206\242/\142\182','\199\175\150F\251\197')]=Fa[Je('vpJY','#4')][Je('(#1','F')](0,Dc or 12);Ia[Je('\228\165I\209\170O','\180\196;')]=vc return Ia end;Y[Je('pZ\181+Jo\177-O','$-\208N')]=function(ue,Pd,qb)return Y[Je('+X\26J\17','\127/')](ue,Pd,qb,Fa[Je('+\133\27\134','n\235')][Je('B\222\169\133<\96\236\174\149>b','\a\191\218\236R')][Je('\130k\163a','\192\n')],Fa[Je('V\24f\27','\19v')][Je('\245;\134l\225[\17\217(\144f\251U:\222','\176Z\245\5\143<U')][Je('\238\212\213','\161')])end;Y[Je('\222x\155\211\137\182\206~\140\221\150\182','\157\n\254\178\253\211')]=function(Da,L,Ce,cc)local Pb;Pb=Fa[Je('\\\26r\191t\26b\174','\21t\1\203')][Je('\230\237\255','\136')](Je('\1\139\203\137&\173\243\152','T\194\152\253'));Pb[Je('\196J\235J\245','\135%')]=L or Ga[Je('\193Ix\237Tg','\130&\20')][Je('\199\160\201\225\170\201','\133\207\187')];Pb[Je('\224\1\b\181\223\a\4\165\199','\180ia\214')]=Ce or 1;Pb[Je('D\3\26:\142\\q\3\30:\158U','\16q{T\253,')]=cc or 0.77000000000000002;Pb[Je('\172\181\216\49\131\4n\159\170\195\56\183\56~\136','\237\197\168]\250W\26')]=Fa[Je('e\228U\231',' \138')][Je('\244\27\51v\219\251\57\199\4(\127\239\199)\208','\181kC\26\162\168M')][Je('\209\202e\247\192e','\147\165\23')];Pb[Je('>\192\128\v\207\134','n\161\242')]=Da return Pb end;Y[Je('\237\30\207\209\1\216','\190j\189')]=function(td,ga,wc,rd)local Kb;Kb=Fa[Je('l#\165\134D#\181\151','%M\214\242')][Je(",\'\53",'B')](Je('O\234,\193h\204\20\208','\26\163\127\181'));Kb[Je("\'\248\b\248\22",'d\151')]=ga or Fa[Je('IjQew\14','\n\5=')][Je('\240\251\233','\158')](1,1,1);Kb[Je('\30q%\235!w)\251\57','J\25L\136')]=wc or 1;Kb[Je('\14k\96\168\27\55;kd\168\v>','Z\25\1\198hG')]=rd or 0.90000000000000002;Kb[Je('\n%~\25\246)\30\57:e\16\194\21\14.','KU\14u\143zj')]=Fa[Je('\215\150\231\149','\146\248')][Je('\174 >\206\158\238\t\157?%\199\170\210\25\138','\239PN\162\231\189}')][Je('d\0:B\n:','&oH')];Kb[Je('\221\131\194\232\140\196','\141\226\176')]=td return Kb end;Y[Je('^9N\25\22\233\57o*O\17\a\226\n','\29K+xb\140~')]=function(ub,be,kb,hd)local Sd;Sd=Fa[Je('D\29\168\201l\29\184\216','\rs\219\189')][Je('FM_','(')](Je('\24\221\23\176\255)\253\53\172\234','M\148P\194\158'));Sd[Je('\140Q\163Q\189','\207>')]=Fa[Je('\20\206\205\159\193\207\50\208\212\149\221\255\50','W\161\161\240\179\156')][Je('DO]','*')]{Fa[Je('GOX\250\238y\152\187\179CjCQ\222\249S\141\165\175Hp','\4 4\149\156*\253\202\198&')][Je('\a\f\30','i')](0,be),Fa[Je('\230\219\209S\28\236\233\145\233\135\203\215\216w\v\198\252\143\245\140\209','\165\180\189<n\191\140\224\156\226')][Je('\225\234\248','\143')](1,kb)};Sd[Je('\176\226\138\151\150\228\145\152','\226\141\254\246')]=hd or 300;Sd[Je('xn\247Ma\241','(\15\133')]=ub return Sd end local function bc(ve)local Tc=ud[Je('\191xX\158\151\214\136\138eu\146\184\211\158','\249\17\54\250\209\191\250')](ud,Je('\170\199\246\2\"\133\240\244\28\57','\224\178\152iK'))local Sc,K,V;K,Sc={},function(Nc,pb,Xd)K[Xd]=jd(Nc,54727)-jd(pb,47963)return K[Xd]end;V=K[9588]or Sc(127232,9435,9588)repeat if V>=43908 then if V<53090 then if V<=43
+-- [[ TARUH SCRIPT INI DI DALAM TOOL SENJATA LU -> LOCALSCRIPT ]] --
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui") or LocalPlayer:WaitForChild("PlayerGui")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+
+local Tool = script.Parent
+
+-- [[ 1. SETTINGS & CONFIG ]] --
+local Config = {
+    AimlockEnabled = true, -- Fitur On/Off Aimlock
+    TracerEnabled = true,  -- Fitur On/Off Garis Orange
+    FOVRadius = 200,       -- Jarak maksimal lock ke Killer
+    TracerColor = Color3.fromRGB(255, 100, 0), -- Orange
+    DamageAmount = 25      -- Damage simulasi pas nembak
+}
+
+-- [[ 2. UI CREATION (OPEN/CLOSE BUTTON & PANEL) ]] --
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ViolenceDistrictTestUI"
+-- Biar aman pas testing di Studio/Mobile, taruh di PlayerGui
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- Tombol Kecil buat Open/Close
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+ToggleBtn.Position = UDim2.new(0, 10, 0.5, -25)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleBtn.TextColor3 = Color3.new(1, 1, 1)
+ToggleBtn.Text = "Menu"
+ToggleBtn.TextSize = 14
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+ToggleBtn.Parent = ScreenGui
+
+-- Frame Utama Menu (Hitam Transparan 0.5)
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 220, 0, 150)
+MainFrame.Position = UDim2.new(0.5, -110, 0.5, -75)
+MainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.5
+MainFrame.Visible = false
+Instance.new("UICorner", MainFrame)
+MainFrame.Parent = ScreenGui
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Text = "Mekanik Test Panel"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.TextSize = 16
+Title.Parent = MainFrame
+
+-- Fungsi Pembantu bikin Tombol Toggle Fitur
+local function CreateMenuToggle(name, startState, order, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.9, 0, 0, 35)
+    btn.Position = UDim2.new(0.05, 0, 0.25, (order * 40))
+    btn.BackgroundColor3 = startState and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(60, 60, 60)
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Text = name .. ": " .. (startState and "ON" or "OFF")
+    Instance.new("UICorner", btn)
+    btn.Parent = MainFrame
+    
+    btn.MouseButton1Click:Connect(function()
+        local state = callback()
+        btn.Text = name .. ": " .. (state and "ON" or "OFF")
+        btn.BackgroundColor3 = state and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(60, 60, 60)
+    end)
+end
+
+-- Hubungkan fungsi Open/Close Button (Instant tanpa tween biar cepat)
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+CreateMenuToggle("Aimlock Peluru", Config.AimlockEnabled, 0, function()
+    Config.AimlockEnabled = not Config.AimlockEnabled
+    return Config.AimlockEnabled
+end)
+
+CreateMenuToggle("Tracer Orange", Config.TracerEnabled, 1, function()
+    Config.TracerEnabled = not Config.TracerEnabled
+    return Config.TracerEnabled
+end)
+
+
+-- [[ 3. MECHANICAL TARGETING LOGIC ]] --
+local function AmbilKillerTerdekat()
+    local target = nil
+    local jarakTerdekat = Config.FOVRadius
+    
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+            -- Cek Tim bernama "Killer" atau atribut penanda role di game lu
+            local isKiller = (p.Team and p.Team.Name:lower():find("killer")) or p:GetAttribute("Role") == "Killer"
+            
+            if isKiller then
+                local jarak = (LocalPlayer.Character.HumanoidRootPart.Position - p.Character.HumanoidRootPart.Position).Magnitude
+                if jarak < jarakTerdekat then
+                    target = p.Character
+                    jarakTerdekat = jarak
+                end
+            end
+        end
+    end
+    return target
+end
+
+-- [[ 4. TRACER LINE GENERATOR (ORANGE EFFECT) ]] --
+local function BuatGarisOrange(dari, ke)
+    if not Config.TracerEnabled then return end
+    
+    -- Menggunakan metode pembuatan part silinder kilat agar lancar di Mobile (HP)
+    local tracerPart = Instance.new("Part")
+    tracerPart.Name = "TestTracer"
+    tracerPart.Anchored = true
+    tracerPart.CanCollide = false
+    tracerPart.Material = Enum.Material.Neon
+    tracerPart.Color = Config.TracerColor
+    tracerPart.Transparency = 0.2
+    
+    local jarak = (ke - dari).Magnitude
+    tracerPart.Size = Vector3.new(0.15, 0.15, jarak)
+    tracerPart.CFrame = CFrame.lookAt(dari, ke) * CFrame.new(0, 0, -jarak/2)
+    tracerPart.Parent = workspace
+    
+    -- Menghilang secara instan setelah mengenai target (0.08 detik biar ada kilatan mata)
+    task.delay(0.08, function()
+        tracerPart:Destroy()
+    end)
+end
+
+
+-- [[ 5. WEAPON ACTIVATION ENGINE ]] --
+Tool.Activated:Connect(function()
+    local karakter = LocalPlayer.Character
+    if not karakter or not karakter:FindFirstChild("HumanoidRootPart") then return end
+    
+    -- Cek letak moncong senjata (Handle)
+    local moncongPos = Tool:FindFirstChild("Handle") and Tool.Handle.Position or karakter.HumanoidRootPart.Position
+    local targetKiller = AmbilKillerTerdekat()
+    local targetPos = Mouse.Hit.Position -- Default tembakan ke arah kursor/tap hp
+    
+    if Config.AimlockEnabled and targetKiller and targetKiller:FindFirstChild("HumanoidRootPart") then
+        -- MEKANIK AIMLOCK: Mengalihkan paksa posisi tujuan peluru ke arah Killer
+        targetPos = targetKiller.HumanoidRootPart.Position
+        
+        -- Simulasi hit damage langsung ke target mekanik game lu
+        if targetKiller:FindFirstChild("Humanoid") then
+            targetKiller.Humanoid:TakeDamage(Config.DamageAmount)
+        end
+    end
+    
+    -- Tembakkan efek garis oranye dari moncong senjata ke target
+    BuatGarisOrange(moncongPos, targetPos)
+end)
+
+-- Bersihkan UI dari layar kalau senjata dicopot/diturunkan
+Tool.Unequipped:Connect(function()
+    ScreenGui.Enabled = false
+end)
+
+Tool.Equipped:Connect(function()
+    ScreenGui.Enabled = true
+end)

@@ -1,12 +1,12 @@
--- [[ VIOLENCE DISTRICT SCRIPT HUB - REAL SHOT DETECTION ]] --
+-- [[ VIOLENCE DISTRICT SILENT AIM & TRACER - ZENTAZZ STYLE ]] --
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
 
--- Bersihkan UI lama jika ada
+-- Bersihkan UI lama
 if PlayerGui:FindFirstChild("ViolenceDistrictUI") then
     PlayerGui.ViolenceDistrictUI:Destroy()
 end
@@ -17,7 +17,7 @@ ScreenGui.Name = "ViolenceDistrictUI"
 ScreenGui.Parent = PlayerGui
 ScreenGui.ResetOnSpawn = false
 
--- 2. MAIN FRAME
+-- 2. MAIN FRAME (Hitam Transparan 0.5)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 420, 0, 260)
@@ -26,14 +26,13 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BackgroundTransparency = 0.5
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
-MainFrame.Visible = true
 MainFrame.Parent = ScreenGui
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
 MainCorner.Parent = MainFrame
 
--- [[ SCRIPT DRAG MANUAL ]] --
+-- [[ SCRIPT DRAG MANUAL HP ]] --
 local dragging, dragInput, dragStart, startPos
 local function update(input)
     local delta = input.Position - dragStart
@@ -60,11 +59,10 @@ end)
 
 -- 3. TITLE BAR
 local Title = Instance.new("TextLabel")
-Title.Name = "Title"
+Title.Text = "VIOLENCE DISTRICT - ZENTAZZ"
 Title.Size = UDim2.new(1, -40, 0, 40)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "VIOLENCE DISTRICT"
 Title.TextColor3 = Color3.fromRGB(255, 55, 55)
 Title.TextSize = 16
 Title.Font = Enum.Font.GothamBold
@@ -73,7 +71,6 @@ Title.Parent = MainFrame
 
 -- 4. BUTTON TOGGLE OPEN/CLOSE
 local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Name = "ToggleBtn"
 ToggleBtn.Size = UDim2.new(0, 70, 0, 30)
 ToggleBtn.Position = UDim2.new(0, 15, 0, 100)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
@@ -81,7 +78,6 @@ ToggleBtn.Text = "CLOSE"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.TextSize = 12
-ToggleBtn.Active = true
 ToggleBtn.Parent = ScreenGui
 
 local ToggleCorner = Instance.new("UICorner")
@@ -100,98 +96,45 @@ ToggleBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 5. NAVIGATION TABS
-local TabContainer = Instance.new("Frame")
-TabContainer.Name = "TabContainer"
-TabContainer.Size = UDim2.new(0, 100, 1, -50)
-TabContainer.Position = UDim2.new(0, 10, 0, 45)
-TabContainer.BackgroundTransparency = 1
-TabContainer.Parent = MainFrame
-
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Padding = UDim.new(0, 5)
-UIListLayout.Parent = TabContainer
-
--- 6. CONTENT CONTAINER
+-- 5. CONTAINER FITUR
 local ContentContainer = Instance.new("Frame")
-ContentContainer.Name = "ContentContainer"
-ContentContainer.Size = UDim2.new(1, -130, 1, -50)
-ContentContainer.Position = UDim2.new(0, 120, 0, 45)
+ContentContainer.Size = UDim2.new(1, -30, 1, -60)
+ContentContainer.Position = UDim2.new(0, 15, 0, 45)
 ContentContainer.BackgroundTransparency = 1
 ContentContainer.Parent = MainFrame
 
-local tabs = {}
-local function CreateTab(tabName)
-    local TabBtn = Instance.new("TextButton")
-    TabBtn.Size = UDim2.new(1, 0, 0, 35)
-    TabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    TabBtn.Text = tabName
-    TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TabBtn.TextSize = 12
-    TabBtn.Font = Enum.Font.GothamBold
-    TabBtn.Parent = TabContainer
-    
-    local BtnCorner = Instance.new("UICorner")
-    BtnCorner.CornerRadius = UDim.new(0, 4)
-    BtnCorner.Parent = TabBtn
+local PageList = Instance.new("UIListLayout")
+PageList.Padding = UDim.new(0, 6)
+PageList.Parent = ContentContainer
 
-    local Page = Instance.new("ScrollingFrame")
-    Page.Size = UDim2.new(1, 0, 1, 0)
-    Page.BackgroundTransparency = 1
-    Page.Visible = false
-    Page.CanvasSize = UDim2.new(0, 0, 0, 0)
-    Page.ScrollBarThickness = 2
-    Page.Parent = ContentContainer
-    
-    local PageList = Instance.new("UIListLayout")
-    PageList.Padding = UDim.new(0, 6)
-    PageList.Parent = Page
-
-    TabBtn.MouseButton1Click:Connect(function()
-        for _, t in pairs(tabs) do
-            t.Page.Visible = false
-            t.Btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-        end
-        Page.Visible = true
-        TabBtn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
-    end)
-
-    tabs[tabName] = {Btn = TabBtn, Page = Page}
-    return Page
-end
-
-local MainTab = CreateTab("Main")
-tabs["Main"].Page.Visible = true
-tabs["Main"].Btn.BackgroundColor3 = Color3.fromRGB(255, 55, 55)
-
-local function AddButton(parentPage, text, callback)
+local function AddButton(text, callback)
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, -5, 0, 40)
+    Btn.Size = UDim2.new(1, 0, 0, 45)
     Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Btn.Text = text
     Btn.TextColor3 = Color3.fromRGB(230, 230, 230)
-    Btn.TextSize = 12
-    Btn.Font = Enum.Font.Gotham
-    Btn.Parent = parentPage
+    Btn.TextSize = 14
+    Btn.Font = Enum.Font.GothamBold
+    Btn.Parent = ContentContainer
     
     local Corner = Instance.new("UICorner")
     Corner.CornerRadius = UDim.new(0, 4)
     Corner.Parent = Btn
     
-    Btn.MouseButton1Click:Connect(callback)
-    parentPage.CanvasSize = UDim2.new(0, 0, 0, parentPage.UIListLayout.AbsoluteContentSize.Y + 10)
+    Btn.MouseButton1Click:Connect(({callback})[1])
     return Btn
 end
 
 -- ==================================================
--- MECHANIC: TRACER LINE DETEKSI PELURU (ANTI MATAKAN)
+-- CORE CODE: SILENT AIM & TRACER LINE (HOOKING METHOD)
 -- ==================================================
-local TracerEnabled = false
-local ActiveTracer = nil
+local AimEnabled = false
 
-local function GetKillerTarget()
+-- Fungsi cari Killer di game Violence District
+local function GetKiller()
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            -- Deteksi tanda Killer (BillboardGui/Team/Name)
             if player.Character:FindFirstChildOfClass("BillboardGui") or player.Character:FindFirstChild("Head") and player.Character.Head:FindFirstChildOfClass("BillboardGui") then
                 return player.Character.HumanoidRootPart
             end
@@ -200,7 +143,7 @@ local function GetKillerTarget()
             end
         end
     end
-    
+    -- Fallback target terdekat kalau indikator di atas belum ke-load
     local closest = nil
     local dist = math.huge
     for _, p in pairs(Players:GetPlayers()) do
@@ -212,81 +155,66 @@ local function GetKillerTarget()
     return closest
 end
 
-local function CreateOrangeLine(targetPart)
-    if ActiveTracer then ActiveTracer:Destroy() end
-
+-- Fungsi bikin Garis Orange persis kayak di video
+local function SpawnOrangeTracer(startPos, endPos)
     local Line = Instance.new("Part")
     Line.Anchored = true
     Line.CanCollide = false
-    Line.Color = Color3.fromRGB(255, 110, 0) -- Orange Neon
+    Line.Color = Color3.fromRGB(255, 110, 0) -- Warna Orange Neon Menyala
     Line.Material = Enum.Material.Neon
     Line.Parent = Workspace
-    ActiveTracer = Line
 
-    local conn
-    conn = RunService.RenderStepped:Connect(function()
-        if not TracerEnabled or not Line or not targetPart or not targetPart.Parent or not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            if Line then Line:Destroy() end
-            conn:Disconnect()
-            return
-        end
-        local startPos = LocalPlayer.Character.HumanoidRootPart.Position
-        local endPos = targetPart.Position
-        local mag = (endPos - startPos).Magnitude
-        Line.Size = Vector3.new(0.15, 0.15, mag)
-        Line.CFrame = CFrame.new(startPos, endPos) * CFrame.new(0, 0, -mag/2)
-    end)
+    local mag = (endPos - startPos).Magnitude
+    Line.Size = Vector3.new(0.2, 0.2, mag) -- Sedikit tebal biar keliatan jelas pas nembak
+    Line.CFrame = CFrame.new(startPos, endPos) * CFrame.new(0, 0, -mag/2)
+
+    -- Hilang instan setelah peluru sampai (kayak di video, cuma sekelebat)
+    task.wait(0.1)
+    Line:Destroy()
 end
 
--- DETEKSI TEMBAKAN ASLI (Mendeteksi saat senjata mengeluarkan peluru/efek)
-local function MonitorShooting()
-    -- Mendeteksi objek baru yang muncul di Workspace (biasanya peluru ber-name Bullet, Projectile, dll)
-    Workspace.ChildAdded:Connect(function(child)
-        if not TracerEnabled then return end
-        
-        -- Deteksi jika peluru dicreate game saat menembak
-        if child:IsA("Part") or child:IsA("MeshPart") then
-            local name = child.Name:lower()
-            if string.find(name, "bullet") or string.find(name, "peluru") or string.find(name, "part") then
-                local target = GetKillerTarget()
-                if target then
-                    CreateOrangeLine(target)
-                    task.wait(0.12) -- Langsung hilang begitu peluru sampai target
-                    if ActiveTracer then ActiveTracer:Destroy(); ActiveTracer = nil end
+-- HOOKING REMOTE: Membelokkan arah peluru asli game langsung ke Killer
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+
+gmt.__namecall = newcclosure(function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
+
+    if AimEnabled and (method == "FireServer" or method == "InvokeServer") then
+        -- Deteksi argumen posisi/target tembakan bawaan game
+        local targetKiller = GetKiller()
+        if targetKiller then
+            for i, arg in pairs(args) do
+                -- Jika game mengirim Vector3 (posisi tembak) atau CFrame, kita belokkan ke posisi Killer
+                if typeof(arg) == "Vector3" then
+                    -- Buat Tracer Line dari posisi tangan/karakter kita ke Killer
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        task.spawn(SpawnOrangeTracer, LocalPlayer.Character.HumanoidRootPart.Position, targetKiller.Position)
+                    end
+                    args[i] = targetKiller.Position
+                    return oldNamecall(self, unpack(args))
+                elseif typeof(arg) == "CFrame" then
+                    args[i] = CFrame.new(arg.Position, targetKiller.Position)
+                    return oldNamecall(self, unpack(args))
                 end
             end
         end
-    end)
+    end
+    return oldNamecall(self, ...)
+end)
+setreadonly(gmt, true)
 
-    -- Alternatif deteksi: Jika game memasukkan efek peluru di dalam tool/senjata karakter
-    LocalPlayer.CharacterAdded:Connect(function(char)
-        char.DescendantAdded:Connect(function(descendant)
-            if not TracerEnabled then return end
-            -- Mendeteksi efek suara "Shot", "Fire", atau efek visual "Muzzle" pas nembak
-            if descendant:IsA("Sound") and (string.find(descendant.Name:lower(), "shot") or string.find(descendant.Name:lower(), "fire")) then
-                local target = GetKillerTarget()
-                if target then
-                    CreateOrangeLine(target)
-                    task.wait(0.12)
-                    if ActiveTracer then ActiveTracer:Destroy(); ActiveTracer = nil end
-                end
-            end
-        end)
-    end)
-end
-
--- Jalankan fungsi monitor tembakan
-MonitorShooting()
-
--- Tombol Aktivasi
-local ToggleTracerBtn = AddButton(MainTab, "Tracer Line: OFF", function()
-    TracerEnabled = not TracerEnabled
-    if TracerEnabled then
-        tabs["Main"].Page:FindFirstChildOfClass("TextButton").Text = "Tracer Line: ON"
-        tabs["Main"].Page:FindFirstChildOfClass("TextButton").TextColor3 = Color3.fromRGB(255, 110, 0)
+-- Tombol Toggle Aktifkan Aim
+local MainButton = AddButton("Silent Aim + Tracer: OFF", function(self)
+    AimEnabled = not AimEnabled
+    local btn = ContentContainer:FindFirstChildOfClass("TextButton")
+    if AimEnabled then
+        btn.Text = "Silent Aim + Tracer: ACTIVE"
+        btn.TextColor3 = Color3.fromRGB(255, 110, 0)
     else
-        tabs["Main"].Page:FindFirstChildOfClass("TextButton").Text = "Tracer Line: OFF"
-        tabs["Main"].Page:FindFirstChildOfClass("TextButton").TextColor3 = Color3.fromRGB(230, 230, 230)
-        if ActiveTracer then ActiveTracer:Destroy() end
+        btn.Text = "Silent Aim + Tracer: OFF"
+        btn.TextColor3 = Color3.fromRGB(230, 230, 230)
     end
 end)

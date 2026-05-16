@@ -1,4 +1,4 @@
--- [[ VIOLENCE DISTRICT COMMERCIAL SCRIPT - ANTI-STUCK SYSTEM ]] --
+-- [[ VIOLENCE DISTRICT COMMERCIAL HUBS - 100% PERFECT SILENT AIM ]] --
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -7,25 +7,24 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Camera = Workspace.CurrentCamera
 
--- Proteksi Double Script & ResetOnSpawn Safety
+-- Proteksi UI Anti-Double & Menetap di CoreGui (Gak bakal hilang dari lobi ke in-game)
 local CoreGui = game:GetService("CoreGui")
 if CoreGui:FindFirstChild("ViolenceDistrictUI") then
     CoreGui.ViolenceDistrictUI:Destroy()
 end
 
--- 1. MAIN SCREEN GUI (ResetOnSpawn = false agar menetap dari lobi sampai in-game)
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ViolenceDistrictUI"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
--- 2. MAIN FRAME (Premium Look - Hitam Transparan 0.5)
+-- UI FRAME PREMIUM (Zentazz Style Look)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Size = UDim2.new(0, 420, 0, 260)
 MainFrame.Position = UDim2.new(0.5, -210, 0.5, -130)
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.5
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+MainFrame.BackgroundTransparency = 0.4
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Parent = ScreenGui
@@ -34,7 +33,7 @@ local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 8)
 MainCorner.Parent = MainFrame
 
--- [[ DRAG MANUAL ANTI-LAG UNTUK HP ]] --
+-- [[ SYSTEM DRAG MOBILE - LALU LINTAS SENTUHAN AMAN ]] --
 local dragging, dragInput, dragStart, startPos
 local function update(input)
     local delta = input.Position - dragStart
@@ -59,19 +58,18 @@ UserInputService.InputChanged:Connect(function(input)
     if input == dragInput and dragging then update(input) end
 end)
 
--- 3. PREMIUM TITLE BAR
 local Title = Instance.new("TextLabel")
-Title.Text = "VIOLENCE DISTRICT PREMIUM"
+Title.Text = "ZENTAZZ V2 - VIOLENCE DISTRICT"
 Title.Size = UDim2.new(1, -40, 0, 40)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(255, 110, 0) -- Orange Neon Premium
+Title.TextColor3 = Color3.fromRGB(255, 110, 0)
 Title.TextSize = 16
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = MainFrame
 
--- 4. TOGGLE BUTTON OPEN/CLOSE (Anti-Hilang)
+-- BUTTON TOGGLE OPEN/CLOSE
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Size = UDim2.new(0, 75, 0, 30)
 ToggleBtn.Position = UDim2.new(0, 15, 0, 140)
@@ -98,7 +96,6 @@ ToggleBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 5. CONTAINER FITUR
 local ContentContainer = Instance.new("Frame")
 ContentContainer.Size = UDim2.new(1, -30, 1, -60)
 ContentContainer.Position = UDim2.new(0, 15, 0, 45)
@@ -128,25 +125,24 @@ local function AddButton(text, callback)
 end
 
 -- ==================================================
--- MECHANIC: CAMERA-ASSISTED AIM & TRACER (100% BULLET OUT)
+-- CORE MECHANICAL: RE-ENGINEERED ULTRA SILENT AIM & TRACER
 -- ==================================================
 local AimEnabled = false
 
-local function GetKiller()
+local function GetKillerTarget()
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            -- 1. Scan BillboardGui penanda Killer (seperti di video)
+            -- Deteksi billboard target (Icon tengkorak/merah di atas kepala killer)
             if player.Character:FindFirstChildOfClass("BillboardGui") or player.Character:FindFirstChild("Head") and player.Character.Head:FindFirstChildOfClass("BillboardGui") then
                 return player.Character.HumanoidRootPart
             end
-            -- 2. Scan Team/Value
+            -- Deteksi tim killer
             if player:FindFirstChild("Killer") or (player.Team and string.find(player.Team.Name:lower(), "kill")) then
                 return player.Character.HumanoidRootPart
             end
         end
     end
-    
-    -- Jaga-jaga: Lock target terdekat jika indikator di atas belum muncul
+    -- Fallback lock otomatis terdekat
     local closest = nil
     local dist = math.huge
     for _, p in pairs(Players:GetPlayers()) do
@@ -158,7 +154,7 @@ local function GetKiller()
     return closest
 end
 
--- Fungsi pembuat tracer line orange menyala sekelebat (Zentazz Style)
+-- Fungsi pembuat tracer line orange menyala sekelebat pas nembak (Persis 100% di video)
 local function SpawnOrangeTracer(startPos, endPos)
     local Line = Instance.new("Part")
     Line.Anchored = true
@@ -168,34 +164,70 @@ local function SpawnOrangeTracer(startPos, endPos)
     Line.Parent = Workspace
 
     local mag = (endPos - startPos).Magnitude
-    Line.Size = Vector3.new(0.2, 0.2, mag)
+    Line.Size = Vector3.new(0.25, 0.25, mag) -- Ketebalan neon disesuaikan biar tajam kayak video
     Line.CFrame = CFrame.new(startPos, endPos) * CFrame.new(0, 0, -mag/2)
 
-    task.wait(0.1)
+    task.wait(0.08) -- Durasi sekelebat kedipan laser peluru
     Line:Destroy()
 end
 
--- Deteksi Input Tembak Layar HP (Touch atau Mouse Click)
-UserInputService.InputBegan:Connect(function(input, processed)
-    if processed or not AimEnabled then return end
+-- ADVANCED RAYCAST & NAMECALL HOOKING (ANTI MACET SENJATA)
+local gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+local oldNamecall = gmt.__namecall
+
+gmt.__namecall = newcclosure(function(self, ...)
+    local args = {...}
+    local method = getnamecallmethod()
     
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        local targetKiller = GetKiller()
-        if targetKiller and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            -- Langkah 1: Arahkan CFrame Kamera ke target secara instan saat diklik tembak
-            local startPosition = LocalPlayer.Character.HumanoidRootPart.Position
-            local targetPosition = targetKiller.Position
-            
-            -- Memaksa kamera menghadap ke target tepat sebelum game memproses raycast peluru
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, targetPosition)
-            
-            -- Langkah 2: Spawn Tracer Line dari tubuh kita menuju Killer
-            task.spawn(SpawnOrangeTracer, startPosition, targetPosition)
+    if AimEnabled and not checkcaller() then
+        -- Deteksi fungsi Raycast global atau pemanggilan Remote Event peluru bawaan game
+        if method == "Raycast" or method == "FindPartOnRayWithIgnoreList" or method == "FindPartOnRay" then
+            local target = GetKillerTarget()
+            if target and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local origin = LocalPlayer.Character.HumanoidRootPart.Position
+                local targetPos = target.Position
+                
+                -- Bikin tracer sekelebat sinkron saat fungsi ini dipicu oleh tombol tembak game
+                task.spawn(SpawnOrangeTracer, origin, targetPos)
+                
+                -- Membelokkan arah matematika Raycast langsung menuju koordinat Killer
+                if method == "Raycast" then
+                    -- args[1] adalah origin, args[2] adalah direction (Vektor tujuan)
+                    args[2] = (targetPos - args[1]).Unit * 1000
+                    return oldNamecall(self, unpack(args))
+                elseif method == "FindPartOnRayWithIgnoreList" or method == "FindPartOnRay" then
+                    -- Membuat Ray baru mengarah instan ke target Killer
+                    args[1] = Ray.new(origin, (targetPos - origin).Unit * 1000)
+                    return oldNamecall(self, unpack(args))
+                end
+            end
+        -- Deteksi RemoteEvent jika senjata mengirim data posisi mentah ("FireServer")
+         RhineMethod = (method == "FireServer" or method == "InvokeServer")
+        if RhineMethod then
+            local target = GetKillerTarget()
+            if target then
+                for i, arg in pairs(args) do
+                    if typeof(arg) == "Vector3" then
+                        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                            task.spawn(SpawnOrangeTracer, LocalPlayer.Character.HumanoidRootPart.Position, target.Position)
+                        end
+                        args[i] = target.Position
+                        return oldNamecall(self, unpack(args))
+                    elseif typeof(arg) == "CFrame" then
+                        args[i] = CFrame.new(arg.Position, target.Position)
+                        return oldNamecall(self, unpack(args))
+                    end
+                end
+            end
         end
     end
+    
+    return oldNamecall(self, ...)
 end)
+setreadonly(gmt, true)
 
--- Tombol Aktivasi Utama
+-- Tombol Toggle Utama
 local MainButton = AddButton("Silent Aim + Tracer: OFF", function(self)
     AimEnabled = not AimEnabled
     local btn = ContentContainer:FindFirstChildOfClass("TextButton")

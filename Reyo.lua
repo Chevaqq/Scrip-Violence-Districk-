@@ -1,106 +1,104 @@
--- VIOLENCE DISTRICT - SIMPLE AIMLOCK & TRACER (WORKING VERSION)
--- Jalankan dengan: loadstring(game:HttpGet("https://raw.githubusercontent.com/Chevaqq/Scrip-Violence-Districk-/refs/heads/main/Simple_AimLock.lua"))()
+-- Memuat UI Library (Orion) agar pas dengan Delta Executor
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Tracer & Anti-Stuck (Delta)", HidePremium = false, SaveConfig = true, ConfigFolder = "DeltaTracer"})
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local Debris = game:GetService("Debris")
 
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local localPlayer = Players.LocalPlayer
+local mouse = localPlayer:GetMouse()
 
--- CONFIG
-local AimLockActive = false
-local TracerActive = false
-local TargetPlayer = nil
+-- CONFIGURATION
+local KILLER_NAME = "Killer" -- Ubah sesuai nama killer/role di game kamu
+local TRACER_COLOR = Color3.fromRGB(255, 0, 0)
+local TRACER_THICKNESS = 0.15
 
--- FUNGSI: Cari target terdekat
-local function getClosestTarget()
-    local closestDist = math.huge
-    local closestTarget = nil
+-- State Fitur
+local _G = getgenv() -- Menggunakan global environment executor
+_G.FeatureEnabled = true
+
+-- 1. FUNGSI TRACER LINE (LOCK TO KILLER)
+local function createTracer(startPosition, targetPosition)
+    local distance = (startPosition - targetPosition).Magnitude
+    local tracer = Instance.new("Part")
     
-    for _, p in pairs(Players:GetPlayers()) do
-        if p ~= player and p.Character then
-            local targetRoot = p.Character:FindFirstChild("HumanoidRootPart")
-            local targetHum = p.Character:FindFirstChild("Humanoid")
+    tracer.Name = "BulletTracer"
+    tracer.Anchored = true
+    tracer.CanCollide = false
+    tracer.Material = Enum.Material.Neon
+    tracer.Color = TRACER_COLOR
+    tracer.Size = Vector3.new(TRACER_THICKNESS, TRACER_THICKNESS, distance)
+    
+    tracer.CFrame = CFrame.lookAt(startPosition, targetPosition) * CFrame.new(0, 0, -distance/2)
+    tracer.Parent = workspace
+    
+    Debris:AddItem(tracer, 0.5) -- Hilang setelah 0.5 detik (peluru sampai)
+end
+
+-- Deteksi klik nembak
+mouse.Button1Down:Connect(function()
+    if not _G.FeatureEnabled then return end
+    
+    local character = localPlayer.Character
+    if not character then return end
+    
+    local tool = character:FindFirstChildOfClass("Tool")
+    if tool then
+        local killerModel = workspace:FindFirstChild(KILLER_NAME)
+        if killerModel and killerModel:FindFirstChild("HumanoidRootPart") then
+            local startPos = tool:FindFirstChild("Handle") and tool.Handle.Position or character.HumanoidRootPart.Position
+            local killerPos = killerModel.HumanoidRootPart.Position
             
-            if targetRoot and targetHum and targetHum.Health > 0 then
-                local dist = (targetRoot.Position - humanoidRootPart.Position).Magnitude
-                if dist < closestDist then
-                    closestDist = dist
-                    closestTarget = p.Character
-                end
+            createTracer(startPos, killerPos)
+        end
+    end
+end)
+
+-- 2. FUNGSI ANTI-STUCK PISTOL
+local lastPosition = Vector3.new()
+local stuckTimer = 0
+
+RunService.Heartbeat:Connect(function(dt)
+    if not _G.FeatureEnabled then return end
+    
+    local character = localPlayer.Character
+    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+    local tool = character and character:FindFirstChildOfClass("Tool")
+    
+    if hrp and tool then
+        local currentPosition = hrp.Position
+        local distanceMoved = (currentPosition - lastPosition).Magnitude
+        
+        if distanceMoved < 0.1 then
+            stuckTimer = stuckTimer + dt
+            if stuckTimer >= 1.5 then -- Jika stuck 1.5 detik saat pegang pistol
+                hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * -5 + Vector3.new(0, 30, 0) -- Unstuck
+                stuckTimer = 0
             end
+        else
+            stuckTimer = 0
         end
-    end
-    return closestTarget
-end
-
--- FUNGSI: Buat tracer line
-local function makeTracerLine(from, to, color)
-    local line = Instance.new("Part")
-    line.Shape = Enum.PartType.Cylinder
-    line.Material = Enum.Material.Neon
-    line.Color = color
-    line.CanCollide = false
-    line.CFrame = CFrame.new((from + to) / 2, to)
-    line.Size = Vector3.new(0.2, (from - to).Magnitude, 0.2)
-    line.Parent = workspace
-    game:GetService("Debris"):AddItem(line, 0.05)
-end
-
--- FUNGSI: AimLock
-local function doAimLock()
-    if not AimLockActive then return end
-    
-    TargetPlayer = getClosestTarget()
-    if TargetPlayer then
-        local targetRoot = TargetPlayer:FindFirstChild("HumanoidRootPart")
-        if targetRoot then
-            humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetRoot.Position)
-        end
-    end
-end
-
--- FUNGSI: Tracer
-local function doTracer()
-    if not TracerActive then return end
-    
-    TargetPlayer = getClosestTarget()
-    if TargetPlayer then
-        local targetRoot = TargetPlayer:FindFirstChild("HumanoidRootPart")
-        if targetRoot then
-            makeTracerLine(humanoidRootPart.Position, targetRoot.Position, Color3.fromRGB(255, 140, 0))
-        end
-    end
-end
-
--- KEYBIND
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    
-    if input.KeyCode == Enum.KeyCode.E then
-        AimLockActive = not AimLockActive
-        print(AimLockActive and "✅ AIMLOCK ON" or "❌ AIMLOCK OFF")
-    end
-    
-    if input.KeyCode == Enum.KeyCode.R then
-        TracerActive = not TracerActive
-        print(TracerActive and "✅ TRACER ON" or "❌ TRACER OFF")
+        lastPosition = currentPosition
+    else
+        stuckTimer = 0
     end
 end)
 
--- MAIN LOOP
-RunService.RenderStepped:Connect(function()
-    if character and humanoidRootPart.Parent then
-        doAimLock()
-        doTracer()
-    end
-end)
+-- TAB UI UNTUK DELTA EXECUTOR
+local MainTab = Window:MakeTab({
+    Name = "Main Features",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
-print("="..string.rep("=", 40))
-print("🎯 VIOLENCE DISTRICT SCRIPT LOADED!")
-print("="..string.rep("=", 40))
-print("📌 Press E = Toggle AimLock")
-print("📌 Press R = Toggle Tracer Line")
-print("="..string.rep("=", 40))
+-- Tombol Open/Close (Toggle) di dalam Menu Delta
+MainTab:AddToggle({
+    Name = "Enable Tracer & Anti-Stuck",
+    Default = true,
+    Callback = function(Value)
+        _G.FeatureEnabled = Value
+    end    
+})
+
+OrionLib:Init()

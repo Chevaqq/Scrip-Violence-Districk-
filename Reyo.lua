@@ -1,104 +1,125 @@
--- Memuat UI Library (Orion) agar pas dengan Delta Executor
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "Tracer & Anti-Stuck (Delta)", HidePremium = false, SaveConfig = true, ConfigFolder = "DeltaTracer"})
+-- Memuat UI Library yang sangat ringan & anti-gagal untuk Delta Executor
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Violence District - Helper", "BloodTheme")
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Debris = game:GetService("Debris")
+local Workspace = game:GetService("Workspace")
 
 local localPlayer = Players.LocalPlayer
 local mouse = localPlayer:GetMouse()
 
--- CONFIGURATION
-local KILLER_NAME = "Killer" -- Ubah sesuai nama killer/role di game kamu
+-- CONFIGURATION & STATE
+getgenv().TracerEnabled = true
+getgenv().AntiStuckEnabled = true
 local TRACER_COLOR = Color3.fromRGB(255, 0, 0)
-local TRACER_THICKNESS = 0.15
+local TRACER_THICKNESS = 0.2
 
--- State Fitur
-local _G = getgenv() -- Menggunakan global environment executor
-_G.FeatureEnabled = true
+-- Fungsi mencari Killer (Mendeteksi musuh terdekat atau player lain yang memegang senjata)
+local function getKiller()
+    local closestKiller = nil
+    local shortestDistance = math.huge
+    
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            -- Violence District sering menyembunyikan status, kita deteksi berdasarkan jarak terdekat/musuh aktif
+            local distance = (localPlayer.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                closestKiller = player.Character
+            end
+        end
+    end
+    return closestKiller
+end
 
--- 1. FUNGSI TRACER LINE (LOCK TO KILLER)
-local function createTracer(startPosition, targetPosition)
-    local distance = (startPosition - targetPosition).Magnitude
+-- 1. TRACER LINE (Muncul saat menembak & Lock ke Killer)
+local function drawTracer(startPos, targetPos)
+    local distance = (startPos - targetPos).Magnitude
     local tracer = Instance.new("Part")
     
-    tracer.Name = "BulletTracer"
+    tracer.Name = "VD_Tracer"
     tracer.Anchored = true
     tracer.CanCollide = false
     tracer.Material = Enum.Material.Neon
     tracer.Color = TRACER_COLOR
     tracer.Size = Vector3.new(TRACER_THICKNESS, TRACER_THICKNESS, distance)
     
-    tracer.CFrame = CFrame.lookAt(startPosition, targetPosition) * CFrame.new(0, 0, -distance/2)
-    tracer.Parent = workspace
+    -- Mengunci arah garis dari senjata ke killer
+    tracer.CFrame = CFrame.lookAt(startPos, targetPos) * CFrame.new(0, 0, -distance/2)
+    tracer.Parent = Workspace
     
-    Debris:AddItem(tracer, 0.5) -- Hilang setelah 0.5 detik (peluru sampai)
+    -- Langsung hapus begitu peluru sampai (0.2 detik sangat ideal untuk game fast-paced)
+    Debris:AddItem(tracer, 0.2)
 end
 
--- Deteksi klik nembak
+-- Deteksi tembakan khusus Violence District (Mendeteksi klik mouse saat combat mode)
 mouse.Button1Down:Connect(function()
-    if not _G.FeatureEnabled then return end
+    if not getgenv().TracerEnabled then return end
     
-    local character = localPlayer.Character
-    if not character then return end
+    local char = localPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     
-    local tool = character:FindFirstChildOfClass("Tool")
-    if tool then
-        local killerModel = workspace:FindFirstChild(KILLER_NAME)
-        if killerModel and killerModel:FindFirstChild("HumanoidRootPart") then
-            local startPos = tool:FindFirstChild("Handle") and tool.Handle.Position or character.HumanoidRootPart.Position
-            local killerPos = killerModel.HumanoidRootPart.Position
+    -- Deteksi senjata di Violence District (biasanya berada di dalam model karakter, bukan tool biasa)
+    local weapon = char:FindFirstChild("Weapon") or char:FindFirstChildOfClass("Model")
+    if weapon then
+        local killer = getKiller()
+        if killer and killer:FindFirstChild("HumanoidRootPart") then
+            -- Ambil posisi dari kepala/tangan karaktermu ke badan Killer
+            local startPos = char.Head.Position
+            local killerPos = killer.HumanoidRootPart.Position
             
-            createTracer(startPos, killerPos)
+            drawTracer(startPos, killerPos)
         end
     end
 end)
 
--- 2. FUNGSI ANTI-STUCK PISTOL
-local lastPosition = Vector3.new()
-local stuckTimer = 0
+-- 2. ANTI-STUCK PISTOL (Khusus map & celah di Violence District)
+local lastPos = Vector3.new()
+local stuckDuration = 0
 
 RunService.Heartbeat:Connect(function(dt)
-    if not _G.FeatureEnabled then return end
+    if not getgenv().AntiStuckEnabled then return end
     
-    local character = localPlayer.Character
-    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-    local tool = character and character:FindFirstChildOfClass("Tool")
+    local char = localPlayer.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
     
-    if hrp and tool then
-        local currentPosition = hrp.Position
-        local distanceMoved = (currentPosition - lastPosition).Magnitude
+    if hrp then
+        local currentPos = hrp.Position
+        local dist = (currentPos - lastPos).Magnitude
         
-        if distanceMoved < 0.1 then
-            stuckTimer = stuckTimer + dt
-            if stuckTimer >= 1.5 then -- Jika stuck 1.5 detik saat pegang pistol
-                hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * -5 + Vector3.new(0, 30, 0) -- Unstuck
-                stuckTimer = 0
+        -- Jika terjebak di tembok/stuck saat baku tembak
+        if dist < 0.1 then
+            stuckDuration = stuckDuration + dt
+            if stuckDuration >= 1.2 then -- Jika stuck lebih dari 1.2 detik
+                -- Dorong karakter sedikit ke atas dan belakang untuk lepas dari glitch tembok
+                hrp.AssemblyLinearVelocity = hrp.CFrame.LookVector * -8 + Vector3.new(0, 35, 0)
+                stuckDuration = 0
             end
         else
-            stuckTimer = 0
+            stuckDuration = 0
         end
-        lastPosition = currentPosition
+        lastPos = currentPos
     else
-        stuckTimer = 0
+        stuckDuration = 0
     end
 end)
 
--- TAB UI UNTUK DELTA EXECUTOR
-local MainTab = Window:MakeTab({
-    Name = "Main Features",
-    Icon = "rbxassetid://4483345998",
-    PremiumOnly = false
-})
+-- SECTIONS UI (Kavo Library - Sangat Lancar di Delta Mobile)
+local Tab = Window:NewTab("Main Features")
+local Section = Tab:NewSection("Violence District Toggles")
 
--- Tombol Open/Close (Toggle) di dalam Menu Delta
-MainTab:AddToggle({
-    Name = "Enable Tracer & Anti-Stuck",
-    Default = true,
-    Callback = function(Value)
-        _G.FeatureEnabled = Value
-    end    
-})
+-- Tombol Open/Close Fitur di Menu Delta
+Section:NewToggle("Enable Bullet Tracer", "Garis peluru mengunci ke killer", function(state)
+    getgenv().TracerEnabled = state
+end)
 
-OrionLib:Init()
+Section:NewToggle("Anti-Stuck Pistol/Glitches", "Auto lepas jika tersangkut di map", function(state)
+    getgenv().AntiStuckEnabled = state
+end)
+
+-- Tombol Rahasia Untuk Membuka/Menutup UI Semuanya (Gunakan Kunci Kanan Layar/Bawaan Kavo)
+Section:NewKeybind("Minimize UI Key", "Tekan tombol ini jika ingin menyembunyikan GUI", Enum.KeyCode.RightControl, function()
+	Library:ToggleUI()
+end)

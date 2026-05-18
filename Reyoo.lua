@@ -1,4 +1,4 @@
--- [[ REYO.VEIL UI SCRIPT FROM SCRATCH ]] --
+-- [[ REYO.VEIL UI SCRIPT FIXED ]] --
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -20,7 +20,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ReyoVeil_Menu"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
--- Mengatasi proteksi exploit/executor mobile
+
 pcall(function()
     ScreenGui.Parent = game:GetService("CoreGui")
 end)
@@ -28,7 +28,7 @@ if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("Player
 
 -- [[ 1. SISTEM KEY WINDOW ]] --
 local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UIDimensions and UIDimensions.new(0, 300, 0, 180) or UDim2.new(0, 300, 0, 180)
+KeyFrame.Size = UDim2.new(0, 300, 0, 180)
 KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
 KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 KeyFrame.BackgroundTransparency = 0.3
@@ -56,6 +56,7 @@ KeyInput.Text = ""
 KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 KeyInput.BackgroundTransparency = 0.5
+KeyInput.ClearTextOnFocus = false -- Biar teks tidak hilang sendiri saat diklik di HP
 KeyInput.Parent = KeyFrame
 
 local KeyInputCorner = Instance.new("UICorner")
@@ -82,14 +83,13 @@ local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 420, 0, 280)
 MainFrame.Position = UDim2.new(0.5, -210, 0.5, -140)
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.4 -- Transparan hitam 0.4
+MainFrame.BackgroundTransparency = 0.4
 MainFrame.BorderSizePixel = 0
 MainFrame.Visible = false
 MainFrame.Parent = ScreenGui
 
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
 
--- Title Main Menu
 local MainTitle = Instance.new("TextLabel")
 MainTitle.Size = UDim2.new(1, 0, 0, 35)
 MainTitle.Text = "  Reyo.Veil - Violence District"
@@ -100,7 +100,6 @@ MainTitle.TextXAlignment = Enum.TextXAlignment.Left
 MainTitle.BackgroundTransparency = 1
 MainTitle.Parent = MainFrame
 
--- Close Button UI
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 35, 0, 35)
 CloseBtn.Position = UDim2.new(1, -35, 0, 0)
@@ -111,7 +110,6 @@ CloseBtn.Font = Enum.Font.SourceSansBold
 CloseBtn.BackgroundTransparency = 1
 CloseBtn.Parent = MainFrame
 
--- Container Tab (Survivor / Killer)
 local TabContainer = Instance.new("Frame")
 TabContainer.Size = UDim2.new(0, 100, 1, -35)
 TabContainer.Position = UDim2.new(0, 0, 0, 35)
@@ -136,7 +134,6 @@ KillTabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 KillTabBtn.BackgroundTransparency = 0.7
 KillTabBtn.Parent = TabContainer
 
--- Content Panel
 local ContentFrame = Instance.new("Frame")
 ContentFrame.Size = UDim2.new(1, -110, 1, -45)
 ContentFrame.Position = UDim2.new(0, 105, 0, 40)
@@ -166,14 +163,14 @@ local KillLayout = Instance.new("UIListLayout")
 KillLayout.Parent = KillList; KillLayout.Padding = UDim.new(0, 5)
 
 
--- [[ 3. TOMBOL OPEN MENU (MOBILE FRIENDLY) ]] --
+-- [[ 3. TOMBOL OPEN MENU ]] --
 local OpenBtn = Instance.new("TextButton")
 OpenBtn.Size = UDim2.new(0, 60, 0, 35)
 OpenBtn.Position = UDim2.new(0, 10, 0.1, 0)
 OpenBtn.BackgroundColor3 = Color3.fromRGB(30, 180, 30)
 OpenBtn.Text = "Open"
 OpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-OpenBtn.Font = Font.fromEnum(Enum.Font.SourceSansBold)
+OpenBtn.Font = Enum.Font.SourceSansBold
 OpenBtn.Visible = false
 OpenBtn.Parent = ScreenGui
 Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6)
@@ -212,8 +209,6 @@ end
 
 
 -- [[ 5. LOGIC & FUNCTIONAL FITUR ]] --
-
--- Fungsi Cari Player Terdekat
 local function GetClosestPlayer()
     local target = nil
     local distance = math.huge
@@ -229,7 +224,6 @@ local function GetClosestPlayer()
     return target
 end
 
--- Fungsi Chams (ESP Box/Highlight)
 local function ApplyChams(player, color)
     if player.Character then
         local highlight = player.Character:FindFirstChild("VeilChams") or Instance.new("Highlight")
@@ -248,30 +242,24 @@ local function RemoveChams(player)
     end
 end
 
--- Loop Handler untuk Game Logic
 RunService.RenderStepped:Connect(function()
-    -- Fitur Chams Loop
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character then
-            -- Note logika deteksi role disesuaikan dev/gameplay Violence District
-            -- Di bawah ini permisalan sederhana team/role
             if Features.SurvChams then
-                ApplyChams(p, Color3.fromRGB(0, 255, 0)) -- Hijau Full
+                ApplyChams(p, Color3.fromRGB(0, 255, 0))
             elseif Features.KillChams then
-                ApplyChams(p, Color3.fromRGB(255, 0, 0)) -- Merah Full
+                ApplyChams(p, Color3.fromRGB(255, 0, 0))
             else
                 RemoveChams(p)
             end
         end
     end
 
-    -- Aimbot / Prediction Logic
     if Features.KillAimbot or Features.SurvAimPred or Features.KillAimPred then
         local target = GetClosestPlayer()
         if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
             local hrp = target.Character.HumanoidRootPart
             local velocity = hrp.AssemblyLinearVelocity
-            -- Rumus prediksi posisi target berdasar kecepatan gerak
             local predictedPos = hrp.Position + (velocity * 0.165) 
             
             if Features.KillAimbot then
@@ -281,7 +269,7 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- Silent Aim Hook Hook (Simulasi bypass tembakan agar langsung kena)
+-- Metatable Hooking
 local MT = getrawmetatable(game)
 local OldNamecall = MT.__namecall
 setreadonly(MT, false)
@@ -293,7 +281,6 @@ MT.__namecall = newcclosure(function(Self, ...)
     if Features.KillSilent and Method == "FireServer" and Self.Name == "TombakRemote" or Method == "InvokeServer" then
         local target = GetClosestPlayer()
         if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            -- Mengubah argument posisi/target tembakan ke HumanoidRootPart Survivor terdekat
             Args[1] = target.Character.HumanoidRootPart.Position
             return Self[Method](Self, unpack(Args))
         end
@@ -304,32 +291,31 @@ setreadonly(MT, true)
 
 
 -- [[ 6. MEMBUAT TOGGLE DI TAB MENU ]] --
-
--- Survivor Tabs
 CreateToggle("Chams Survivor", SurvList, function(state) Features.SurvChams = state end)
 CreateToggle("Chams Killer", SurvList, function(state) Features.KillChams = state end)
 CreateToggle("Aim Prediksi", SurvList, function(state) Features.SurvAimPred = state end)
 
--- Killer Tabs
 CreateToggle("Aimbot Veil", KillList, function(state) Features.KillAimbot = state end)
 CreateToggle("Aim Prediksi Veil", KillList, function(state) Features.KillAimPred = state end)
 CreateToggle("Silent Aim Veil", KillList, function(state) Features.KillSilent = state end)
 
 
--- [[ 7. INTERAKSI BUTTON & KEY VALIDATION ]] --
+-- [[ 7. INTERAKSI BUTTON & KEY VALIDATION (FIXED) ]] --
 
--- Submit Key Logic
 KeyBtn.MouseButton1Click:Connect(function()
-    if KeyInput.Text == "Veil" then
-        KeyFrame:Destroy() -- Hapus UI input key instant
-        MainFrame.Visible = true -- Buka menu utama
+    -- Membersihkan input dari spasi dan karakter 'newline' bawaan mobile keyboard
+    local CleanedKey = string.gsub(KeyInput.Text, "%s+", "")
+    
+    if CleanedKey == "Veil" then
+        KeyFrame:Destroy() -- Hapus UI input key secara instan
+        MainFrame.Visible = true -- Tampilkan menu utama langsung
     else
         KeyInput.Text = ""
         KeyInput.PlaceholderText = "KEY SALAH! Coba lagi..."
     end
 end)
 
--- Navigation Tab Switcher (Instant tanpa transisi lemot)
+-- Navigation Tab
 SurvTabBtn.MouseButton1Click:Connect(function()
     SurvList.Visible = true
     KillList.Visible = false
@@ -355,7 +341,7 @@ OpenBtn.MouseButton1Click:Connect(function()
     OpenBtn.Visible = false
 end)
 
--- Fitur Dragging Menu (Biar bisa digeser di layar HP)
+-- Dragging System
 local dragging, dragInput, dragStart, startPos
 local function update(input)
     local delta = input.Position - dragStart

@@ -1,370 +1,310 @@
--- [[ REYO.VEIL UI SCRIPT FIXED ]] --
-local UserInputService = game:GetService("UserInputService")
+-- [[ REYHUB / ACCOORNNHUB - VIOLENCE DISTRICT SCRIPT ]] --
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
--- Local States (Fitur)
-local Features = {
-    SurvChams = false,
-    KillChams = false,
-    SurvAimPred = false,
-    KillAimbot = false,
-    KillAimPred = false,
-    KillSilent = false
+-- State Pemain
+local CurrentTarget = nil
+
+-- Konfigurasi Fitur (On/Off)
+local Config = {
+    KeyVerified = false,
+    CorrectKey = "Reyo",
+    ChamsKiller = false,
+    ChamsSurvivor = false,
+    SilentAimSurvivor = false, -- Aimprediksi Survivor
+    AimbotVeil = false,        -- Lock Killer
+    SilentAimVeil = false,     -- Aimprediksi Veil
+    ShowVeilLine = false
 }
 
--- Create UI Base
+-- [[ UI SYSTEM (Instant & Transparan) ]] --
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ReyoVeil_Menu"
+ScreenGui.Name = "ReyHub_ViolenceDistrict"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
-pcall(function()
-    ScreenGui.Parent = game:GetService("CoreGui")
+-- Button Open/Close (Responsif di HP)
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 90, 0, 35)
+ToggleBtn.Position = UDim2.new(0, 10, 0, 10)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ToggleBtn.BackgroundTransparency = 0.3
+ToggleBtn.TextColor3 = Color3.fromRGB(0, 255, 255)
+ToggleBtn.Text = "CLOSE"
+ToggleBtn.TextSize = 14
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.Parent = ScreenGui
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 340, 0, 240)
+MainFrame.Position = UDim2.new(0.5, -170, 0.5, -120)
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.BackgroundTransparency = 0.5 -- Transparansi 0.5 sesuai preferensimu
+MainFrame.BorderSizePixel = 2
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 255)
+MainFrame.Parent = ScreenGui
+
+-- Fungsi Toggle Menu (Instant)
+ToggleBtn.MouseButton1Click:Connect(function()
+    if MainFrame.Visible then
+        MainFrame.Visible = false
+        ToggleBtn.Text = "OPEN"
+    else
+        MainFrame.Visible = true
+        ToggleBtn.Text = "CLOSE"
+    end
 end)
-if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
 
--- [[ 1. SISTEM KEY WINDOW ]] --
+-- [[ 1. KEY SYSTEM TAB ]] --
 local KeyFrame = Instance.new("Frame")
-KeyFrame.Size = UDim2.new(0, 300, 0, 180)
-KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-KeyFrame.BackgroundTransparency = 0.3
-KeyFrame.BorderSizePixel = 0
-KeyFrame.Parent = ScreenGui
-
-local KeyCorner = Instance.new("UICorner")
-KeyCorner.CornerRadius = UDim.new(0, 8)
-KeyCorner.Parent = KeyFrame
+KeyFrame.Size = UDim2.new(1, 0, 1, 0)
+KeyFrame.BackgroundTransparency = 1
+KeyFrame.Parent = MainFrame
 
 local KeyTitle = Instance.new("TextLabel")
 KeyTitle.Size = UDim2.new(1, 0, 0, 40)
-KeyTitle.Text = "Reyo.Veil"
+KeyTitle.Text = "ENTER KEY TO ACCESS"
 KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyTitle.TextSize = 20
 KeyTitle.Font = Enum.Font.SourceSansBold
+KeyTitle.TextSize = 18
 KeyTitle.BackgroundTransparency = 1
 KeyTitle.Parent = KeyFrame
 
 local KeyInput = Instance.new("TextBox")
-KeyInput.Size = UDim2.new(0.8, 0, 0, 35)
-KeyInput.Position = UDim2.new(0.1, 0, 0.35, 0)
-KeyInput.PlaceholderText = "Masukkan Key Disini..."
+KeyInput.Size = UDim2.new(0, 200, 0, 35)
+KeyInput.Position = UDim2.new(0.5, -100, 0.4, -17)
+KeyInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+KeyInput.TextColor3 = Color3.fromRGB(0, 255, 0)
 KeyInput.Text = ""
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-KeyInput.BackgroundTransparency = 0.5
-KeyInput.ClearTextOnFocus = false -- Biar teks tidak hilang sendiri saat diklik di HP
+KeyInput.PlaceholderText = "Input Key Here..."
 KeyInput.Parent = KeyFrame
 
-local KeyInputCorner = Instance.new("UICorner")
-KeyInputCorner.CornerRadius = UDim.new(0, 5)
-KeyInputCorner.Parent = KeyInput
+local KeySubmit = Instance.new("TextButton")
+KeySubmit.Size = UDim2.new(0, 120, 0, 35)
+KeySubmit.Position = UDim2.new(0.5, -60, 0.7, -17)
+KeySubmit.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+KeySubmit.Text = "SUBMIT"
+KeySubmit.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeySubmit.Font = Enum.Font.SourceSansBold
+KeySubmit.Parent = KeyFrame
 
-local KeyBtn = Instance.new("TextButton")
-KeyBtn.Size = UDim2.new(0.8, 0, 0, 35)
-KeyBtn.Position = UDim2.new(0.1, 0, 0.65, 0)
-KeyBtn.Text = "Submit"
-KeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 255)
-KeyBtn.Font = Enum.Font.SourceSansBold
-KeyBtn.TextSize = 16
-KeyBtn.Parent = KeyFrame
+-- [[ MAIN CHEAT INTERFACE (Hidden at start) ]] --
+local CheatFrame = Instance.new("Frame")
+CheatFrame.Size = UDim2.new(1, 0, 1, 0)
+CheatFrame.BackgroundTransparency = 1
+CheatFrame.Visible = false
+CheatFrame.Parent = MainFrame
 
-local KeyBtnCorner = Instance.new("UICorner")
-KeyBtnCorner.CornerRadius = UDim.new(0, 5)
-KeyBtnCorner.Parent = KeyBtn
+-- Tab Navigation
+local TabSurvivorBtn = Instance.new("TextButton")
+TabSurvivorBtn.Size = UDim2.new(0.5, 0, 0, 35)
+TabSurvivorBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+TabSurvivorBtn.Text = "SURVIVOR"
+TabSurvivorBtn.TextColor3 = Color3.fromRGB(0, 255, 255)
+TabSurvivorBtn.Parent = CheatFrame
 
+local TabKillerBtn = Instance.new("TextButton")
+TabKillerBtn.Size = UDim2.new(0.5, 0, 0, 35)
+TabKillerBtn.Position = UDim2.new(0.5, 0, 0, 0)
+TabKillerBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+TabKillerBtn.Text = "KILLER"
+TabKillerBtn.TextColor3 = Color3.fromRGB(255, 0, 0)
+TabKillerBtn.Parent = CheatFrame
 
--- [[ 2. MAIN MENU WINDOW ]] --
-local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 420, 0, 280)
-MainFrame.Position = UDim2.new(0.5, -210, 0.5, -140)
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrame.BackgroundTransparency = 0.4
-MainFrame.BorderSizePixel = 0
-MainFrame.Visible = false
-MainFrame.Parent = ScreenGui
+-- Content Containers
+local SurvivorContent = Instance.new("Frame")
+SurvivorContent.Size = UDim2.new(1, 0, 1, -35)
+SurvivorContent.Position = UDim2.new(0, 0, 0, 35)
+SurvivorContent.BackgroundTransparency = 1
+SurvivorContent.Parent = CheatFrame
 
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
+local KillerContent = Instance.new("Frame")
+KillerContent.Size = UDim2.new(1, 0, 1, -35)
+KillerContent.Position = UDim2.new(0, 0, 0, 35)
+KillerContent.BackgroundTransparency = 1
+KillerContent.Visible = false
+KillerContent.Parent = CheatFrame
 
-local MainTitle = Instance.new("TextLabel")
-MainTitle.Size = UDim2.new(1, 0, 0, 35)
-MainTitle.Text = "  Reyo.Veil - Violence District"
-MainTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-MainTitle.TextSize = 18
-MainTitle.Font = Enum.Font.SourceSansBold
-MainTitle.TextXAlignment = Enum.TextXAlignment.Left
-MainTitle.BackgroundTransparency = 1
-MainTitle.Parent = MainFrame
+-- Switch Tab Logic (Instant)
+TabSurvivorBtn.MouseButton1Click:Connect(function()
+    SurvivorContent.Visible = true
+    KillerContent.Visible = false
+end)
 
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 35, 0, 35)
-CloseBtn.Position = UDim2.new(1, -35, 0, 0)
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 70, 70)
-CloseBtn.TextSize = 18
-CloseBtn.Font = Enum.Font.SourceSansBold
-CloseBtn.BackgroundTransparency = 1
-CloseBtn.Parent = MainFrame
+TabKillerBtn.MouseButton1Click:Connect(function()
+    SurvivorContent.Visible = false
+    KillerContent.Visible = true
+end)
 
-local TabContainer = Instance.new("Frame")
-TabContainer.Size = UDim2.new(0, 100, 1, -35)
-TabContainer.Position = UDim2.new(0, 0, 0, 35)
-TabContainer.BackgroundTransparency = 1
-TabContainer.Parent = MainFrame
+-- UI Helper: Create Toggle Button
+local function CreateToggle(name, pos, parent, configKey)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(0, 260, 0, 30)
+    Btn.Position = pos
+    Btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    Btn.Text = name .. " : OFF"
+    Btn.TextColor3 = Color3.fromRGB(255, 50, 50)
+    Btn.Font = Enum.Font.SourceSansBold
+    Btn.TextSize = 14
+    Btn.Parent = parent
 
-local SurvTabBtn = Instance.new("TextButton")
-SurvTabBtn.Size = UDim2.new(1, 0, 0, 40)
-SurvTabBtn.Position = UDim2.new(0, 0, 0, 0)
-SurvTabBtn.Text = "Survivor"
-SurvTabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SurvTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-SurvTabBtn.BackgroundTransparency = 0.5
-SurvTabBtn.Parent = TabContainer
-
-local KillTabBtn = Instance.new("TextButton")
-KillTabBtn.Size = UDim2.new(1, 0, 0, 40)
-KillTabBtn.Position = UDim2.new(0, 0, 0, 45)
-KillTabBtn.Text = "Killer"
-KillTabBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-KillTabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-KillTabBtn.BackgroundTransparency = 0.7
-KillTabBtn.Parent = TabContainer
-
-local ContentFrame = Instance.new("Frame")
-ContentFrame.Size = UDim2.new(1, -110, 1, -45)
-ContentFrame.Position = UDim2.new(0, 105, 0, 40)
-ContentFrame.BackgroundTransparency = 1
-ContentFrame.Parent = MainFrame
-
-local SurvList = Instance.new("ScrollingFrame")
-SurvList.Size = UDim2.new(1, 0, 1, 0)
-SurvList.BackgroundTransparency = 1
-SurvList.CanvasSize = UDim2.new(0, 0, 1.5, 0)
-SurvList.ScrollBarThickness = 2
-SurvList.Visible = true
-SurvList.Parent = ContentFrame
-
-local KillList = Instance.new("ScrollingFrame")
-KillList.Size = UDim2.new(1, 0, 1, 0)
-KillList.BackgroundTransparency = 1
-KillList.CanvasSize = UDim2.new(0, 0, 1.5, 0)
-KillList.ScrollBarThickness = 2
-KillList.Visible = false
-KillList.Parent = ContentFrame
-
-local SurvLayout = Instance.new("UIListLayout")
-SurvLayout.Parent = SurvList; SurvLayout.Padding = UDim.new(0, 5)
-
-local KillLayout = Instance.new("UIListLayout")
-KillLayout.Parent = KillList; KillLayout.Padding = UDim.new(0, 5)
-
-
--- [[ 3. TOMBOL OPEN MENU ]] --
-local OpenBtn = Instance.new("TextButton")
-OpenBtn.Size = UDim2.new(0, 60, 0, 35)
-OpenBtn.Position = UDim2.new(0, 10, 0.1, 0)
-OpenBtn.BackgroundColor3 = Color3.fromRGB(30, 180, 30)
-OpenBtn.Text = "Open"
-OpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-OpenBtn.Font = Enum.Font.SourceSansBold
-OpenBtn.Visible = false
-OpenBtn.Parent = ScreenGui
-Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6)
-
-
--- [[ 4. FUNCTION MAKER FOR UI ]] --
-local function CreateToggle(name, parent, callback)
-    local ToggleBtn = Instance.new("TextButton")
-    ToggleBtn.Size = UDim2.new(0.95, 0, 0, 35)
-    ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    ToggleBtn.BackgroundTransparency = 0.5
-    ToggleBtn.Text = "  " .. name .. " : OFF"
-    ToggleBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
-    ToggleBtn.TextXAlignment = Enum.TextXAlignment.Left
-    ToggleBtn.Font = Enum.Font.SourceSans
-    ToggleBtn.TextSize = 15
-    ToggleBtn.Parent = parent
-    
-    Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 4)
-    
-    local enabled = false
-    ToggleBtn.MouseButton1Click:Connect(function()
-        enabled = not enabled
-        if enabled then
-            ToggleBtn.Text = "  " .. name .. " : ON"
-            ToggleBtn.TextColor3 = Color3.fromRGB(100, 255, 100)
-            ToggleBtn.BackgroundColor3 = Color3.fromRGB(50, 70, 50)
+    Btn.MouseButton1Click:Connect(function()
+        Config[configKey] = not Config[configKey]
+        if Config[configKey] then
+            Btn.Text = name .. " : ON"
+            Btn.TextColor3 = Color3.fromRGB(50, 255, 50)
         else
-            ToggleBtn.Text = "  " .. name .. " : OFF"
-            ToggleBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
-            ToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+            Btn.Text = name .. " : OFF"
+            Btn.TextColor3 = Color3.fromRGB(255, 50, 50)
         end
-        callback(enabled)
     end)
+    return Btn
 end
 
+-- Populate Survivor Tab
+CreateToggle("Chams Killer (Red)", UDim2.new(0.5, -130, 0.1, 0), SurvivorContent, "ChamsKiller")
+CreateToggle("Chams Survivor (Green)", UDim2.new(0.5, -130, 0.35, 0), SurvivorContent, "ChamsSurvivor")
+CreateToggle("Aim Prediction / Anti-Miss", UDim2.new(0.5, -130, 0.6, 0), SurvivorContent, "SilentAimSurvivor")
 
--- [[ 5. LOGIC & FUNCTIONAL FITUR ]] --
+-- Populate Killer Tab
+CreateToggle("Aimbot Lock (Closest)", UDim2.new(0.5, -130, 0.1, 0), KillerContent, "AimbotVeil")
+CreateToggle("Veil Prediction (Anti-Miss)", UDim2.new(0.5, -130, 0.35, 0), KillerContent, "SilentAimVeil")
+CreateToggle("Show Veil Line to Target", UDim2.new(0.5, -130, 0.6, 0), KillerContent, "ShowVeilLine")
+
+-- Key Verification Trigger
+KeySubmit.MouseButton1Click:Connect(function()
+    if KeyInput.Text == Config.CorrectKey then
+        Config.KeyVerified = true
+        KeyFrame.Visible = false
+        CheatFrame.Visible = true
+    else
+        KeyInput.Text = ""
+        KeyInput.PlaceholderText = "WRONG KEY! Try Again."
+    end
+end)
+
+
+-- [[ FUNCTIONALITIES & GAMEPLAY MECHANICS ]] --
+
+-- Fungsi Cari Player Terdekat (Untuk Aimbot/Silent Aim)
 local function GetClosestPlayer()
-    local target = nil
-    local distance = math.huge
+    local Target = nil
+    local ShortestDistance = math.huge
+
     for _, v in pairs(Players:GetPlayers()) do
-        if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            local mag = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
-            if mag < distance then
-                distance = mag
-                target = v
+        if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChildOfClass("Humanoid").Health > 0 then
+            local ScreenPos, OnScreen = Camera:WorldToViewportPoint(v.Character.HumanoidRootPart.Position)
+            if OnScreen then
+                local MousePos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2) -- Center of screen for mobile
+                local Mag = (Vector2.new(ScreenPos.X, ScreenPos.Y) - MousePos).Magnitude
+                if Mag < ShortestDistance then
+                    ShortestDistance = Mag
+                    Target = v
+                end
             end
         end
     end
-    return target
+    return Target
 end
 
+-- [[ CHAMS MECHANIC (Highlight) ]] --
 local function ApplyChams(player, color)
     if player.Character then
-        local highlight = player.Character:FindFirstChild("VeilChams") or Instance.new("Highlight")
-        highlight.Name = "VeilChams"
-        highlight.FillColor = color
-        highlight.FillTransparency = 0.4
-        highlight.OutlineTransparency = 1
-        highlight.Adornee = player.Character
-        highlight.Parent = player.Character
+        local Highlight = player.Character:FindFirstChildOfClass("Highlight")
+        if not Highlight then
+            Highlight = Instance.new("Highlight")
+            Highlight.Parent = player.Character
+        end
+        Highlight.FillColor = color
+        Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        Highlight.FillTransparency = 0.4
+        Highlight.OutlineTransparency = 0
+        Highlight.Enabled = true
     end
 end
 
 local function RemoveChams(player)
-    if player.Character and player.Character:FindFirstChild("VeilChams") then
-        player.Character.VeilChams:Destroy()
+    if player.Character then
+        local Highlight = player.Character:FindFirstChildOfClass("Highlight")
+        if Highlight then
+            Highlight:Destroy()
+        end
     end
 end
 
+-- [[ TRACER LINE MECHANIC ]] --
+local LineDrawing = Drawing.new("Line")
+LineDrawing.Visible = false
+LineDrawing.Color = Color3.fromRGB(0, 255, 0)
+LineDrawing.Thickness = 2
+LineDrawing.Transparency = 1
+
+-- [[ MAIN LOOP (RenderStepped untuk Responsivitas Tinggi) ]] --
 RunService.RenderStepped:Connect(function()
+    if not Config.KeyVerified then return end
+
+    CurrentTarget = GetClosestPlayer()
+
+    -- Manage Chams & Roles
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character then
-            if Features.SurvChams then
-                ApplyChams(p, Color3.fromRGB(0, 255, 0))
-            elseif Features.KillChams then
-                ApplyChams(p, Color3.fromRGB(255, 0, 0))
+            -- Note: Penentuan role "Killer" atau "Survivor" idealnya membaca ObjectValue/Team bawaan game.
+            -- Script ini menggunakan deteksi general, kamu bisa menyesuaikan string "Killer" dengan sistem spesifik gamenya.
+            local isKiller = p:GetAttribute("Role") == "Killer" or p.Name:lower():find("killer") 
+            
+            if Config.ChamsKiller and isKiller then
+                ApplyChams(p, Color3.fromRGB(255, 0, 0)) -- Merah Full
+            elseif Config.ChamsSurvivor and not isKiller then
+                ApplyChams(p, Color3.fromRGB(0, 255, 0)) -- Hijau Full
             else
                 RemoveChams(p)
             end
         end
     end
 
-    if Features.KillAimbot or Features.SurvAimPred or Features.KillAimPred then
-        local target = GetClosestPlayer()
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            local hrp = target.Character.HumanoidRootPart
-            local velocity = hrp.AssemblyLinearVelocity
-            local predictedPos = hrp.Position + (velocity * 0.165) 
-            
-            if Features.KillAimbot then
-                Camera.CFrame = CFrame.new(Camera.CFrame.Position, hrp.Position)
+    -- Aimbot Veil Lock Camera
+    if Config.AimbotVeil and CurrentTarget and CurrentTarget.Character and CurrentTarget.Character:FindFirstChild("HumanoidRootPart") then
+        Camera.CFrame = CFrame.new(Camera.CFrame.Position, CurrentTarget.Character.HumanoidRootPart.Position)
+    end
+
+    -- Visualisasi Line Hijau ke Target (Veil Line)
+    if Config.ShowVeilLine and CurrentTarget and CurrentTarget.Character and CurrentTarget.Character:FindFirstChild("HumanoidRootPart") then
+        local ScreenPos, OnScreen = Camera:WorldToViewportPoint(CurrentTarget.Character.HumanoidRootPart.Position)
+        if OnScreen then
+            LineDrawing.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+            LineDrawing.To = Vector2.new(ScreenPos.X, ScreenPos.Y)
+            LineDrawing.Visible = true
+        else
+            LineDrawing.Visible = false
+        end
+    else
+        LineDrawing.Visible = false
+    end
+end)
+
+-- [[ SILENT AIM & ANTI-MISS ENGINE (HookMetamethod) ]] --
+-- System ini memanipulasi arah peluru/tombak secara langsung (Metatable Hook) sehingga dipaksa kena target terdekat.
+local OldNamecall
+OldNamecall = hookmetamethod(game, "__namecall", function(Self, ...)
+    local Args = {...}
+    local Method = getnamecallmethod()
+
+    if not checkcaller() and (Method == "FindPartOnRayWithIgnoreList" or Method == "FindPartOnRay" or Method == "Raycast") then
+        if (Config.SilentAimSurvivor or Config.SilentAimVeil) and CurrentTarget and CurrentTarget.Character and CurrentTarget.Character:FindFirstChild("HumanoidRootPart") then
+            -- Memodifikasi arah vector raycast langsung menuju target root part (Anti Miss Bergaransi)
+            local TargetPart = CurrentTarget.Character.HumanoidRootPart
+            if Args[1] and typeof(Args[1]) == "Ray" then
+                Args[1] = Ray.new(Args[1].Origin, (TargetPart.Position - Args[1].Origin).Unit * 9999)
             end
         end
     end
+    return OldNamecall(Self, unpack(Args))
 end)
 
--- Metatable Hooking
-local MT = getrawmetatable(game)
-local OldNamecall = MT.__namecall
-setreadonly(MT, false)
-
-MT.__namecall = newcclosure(function(Self, ...)
-    local Args = {...}
-    local Method = getnamecallmethod()
-    
-    if Features.KillSilent and Method == "FireServer" and Self.Name == "TombakRemote" or Method == "InvokeServer" then
-        local target = GetClosestPlayer()
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
-            Args[1] = target.Character.HumanoidRootPart.Position
-            return Self[Method](Self, unpack(Args))
-        end
-    end
-    return OldNamecall(Self, ...)
-end)
-setreadonly(MT, true)
-
-
--- [[ 6. MEMBUAT TOGGLE DI TAB MENU ]] --
-CreateToggle("Chams Survivor", SurvList, function(state) Features.SurvChams = state end)
-CreateToggle("Chams Killer", SurvList, function(state) Features.KillChams = state end)
-CreateToggle("Aim Prediksi", SurvList, function(state) Features.SurvAimPred = state end)
-
-CreateToggle("Aimbot Veil", KillList, function(state) Features.KillAimbot = state end)
-CreateToggle("Aim Prediksi Veil", KillList, function(state) Features.KillAimPred = state end)
-CreateToggle("Silent Aim Veil", KillList, function(state) Features.KillSilent = state end)
-
-
--- [[ 7. INTERAKSI BUTTON & KEY VALIDATION (FIXED) ]] --
-
-KeyBtn.MouseButton1Click:Connect(function()
-    -- Membersihkan input dari spasi dan karakter 'newline' bawaan mobile keyboard
-    local CleanedKey = string.gsub(KeyInput.Text, "%s+", "")
-    
-    if CleanedKey == "Veil" then
-        KeyFrame:Destroy() -- Hapus UI input key secara instan
-        MainFrame.Visible = true -- Tampilkan menu utama langsung
-    else
-        KeyInput.Text = ""
-        KeyInput.PlaceholderText = "KEY SALAH! Coba lagi..."
-    end
-end)
-
--- Navigation Tab
-SurvTabBtn.MouseButton1Click:Connect(function()
-    SurvList.Visible = true
-    KillList.Visible = false
-    SurvTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    KillTabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-end)
-
-KillTabBtn.MouseButton1Click:Connect(function()
-    KillList.Visible = true
-    SurvList.Visible = false
-    KillTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    SurvTabBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-end)
-
--- Close / Open Interaction
-CloseBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    OpenBtn.Visible = true
-end)
-
-OpenBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = true
-    OpenBtn.Visible = false
-end)
-
--- Dragging System
-local dragging, dragInput, dragStart, startPos
-local function update(input)
-    local delta = input.Position - dragStart
-    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-MainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = MainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
-    end
-end)
-
-MainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then update(input) end
+-- Pembersihan Gambar saat Script Dihentikan
+LocalPlayer.CharacterAdding:Connect(function()
+    LineDrawing.Visible = false
 end)
